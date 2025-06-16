@@ -1,0 +1,4 @@
+*.nc
+*.pyc
+*-checkpoint.py
+*egg-info/
