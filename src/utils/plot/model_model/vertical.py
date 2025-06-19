@@ -251,7 +251,7 @@ def get_grid_info(var_name, ds, mesh, y):
 
 app.layout = dbc.Container([
     dbc.Row([
-        dbc.Col(html.H2("Vertical Slice Viewer"), width="auto"),
+        dbc.Col(html.H2("Model-Model Difference Viewer (Vertical)"), width="auto"),
     ], className="mb-2"),
     dbc.Row([
         dbc.Col([

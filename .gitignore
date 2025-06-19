@@ -1,6 +1,6 @@
 *.nc
 *.pyc
-*-checkpoint.py
-*-checkpoint.ipynb
+*-checkpoint.*
+.ipynb_checkpoints/
 *egg-info/
 
