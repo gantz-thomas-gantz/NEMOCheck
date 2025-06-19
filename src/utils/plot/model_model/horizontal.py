@@ -146,7 +146,7 @@ def app_legend():
     })
 
 def reset_points_button():
-    return dbc.Button('Reset Points', id='reset-all-btn', n_clicks=0, color="outline-danger", size="sm", className="mt-4")
+    return dbc.Button('Reset All', id='reset-all-btn', n_clicks=0, color="outline-danger", size="sm", className="mt-4")
 
 # --- Layout ---
 app.layout = dbc.Container([
