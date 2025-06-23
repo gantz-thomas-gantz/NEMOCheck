@@ -113,6 +113,10 @@ def range_slider_year_marks(years, max_marks=5):
     marks = {k: marks[k] for k in sorted(marks.keys())}
     return marks
 
+def wrap180(lon):
+    """Convert a longitude to the [-180, 180] range."""
+    return ((lon + 180) % 360) - 180
+
 external_stylesheets = [dbc.themes.FLATLY]
 app = Dash(__name__, external_stylesheets=external_stylesheets)
 
@@ -554,6 +558,11 @@ def make_plot_grid(n_clicks, model_files, var_list, depth_level, center, time_di
                         cmap=cmap_diff,
                         vmin=-diff_absmax[var], vmax=diff_absmax[var]
                     )
+                # Set longitude ticks and labels to [-180, 180]
+                xticks = np.linspace(np.nanmin(nav_lon_centered), np.nanmax(nav_lon_centered), 7)
+                xticklabels = [f"{wrap180(l):.0f}°" for l in xticks]
+                ax.set_xticks(xticks)
+                ax.set_xticklabels(xticklabels)
                 buf = io.BytesIO()
                 plt.savefig(buf, format="png", dpi=100, bbox_inches='tight', pad_inches=0.02)
                 plt.close(fig)
@@ -769,6 +778,11 @@ def zoom_modal(zoom_btn_clicks, close_modal_clicks, plot_imgs_store, plot_config
             vmin=-diff_absmax[var], vmax=diff_absmax[var]
         )
         title = f"{season} – {ALLOWED_VARS[var]}\n Δ {model_files[0]} - {model_files[1]}"
+    # Set longitude ticks and labels to [-180, 180]
+    xticks = np.linspace(np.nanmin(nav_lon_centered), np.nanmax(nav_lon_centered), 7)
+    xticklabels = [f"{wrap180(l):.0f}°" for l in xticks]
+    ax.set_xticks(xticks)
+    ax.set_xticklabels(xticklabels)
     ax.set_xlabel("Longitude", fontsize=12)
     ax.set_ylabel("Depth (m)", fontsize=12)
     ax.set_title(title, fontsize=10)
