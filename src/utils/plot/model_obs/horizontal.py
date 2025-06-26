@@ -16,7 +16,7 @@ ALLOWED_VARS = {
 COLOR_CYCLE = px.colors.qualitative.Plotly
 
 clim_obs = xr.open_dataset(os.path.expanduser('~/NEMOCheck/data/processed/combined_observations.nc'))
-clim_model = xr.open_dataset(os.path.expanduser('~/NEMOCheck/data/processed/model.nc'))
+clim_model = xr.open_dataset(os.path.expanduser('~/NEMOCheck/data/processed/model_new.nc'))
 clim_error = clim_model - clim_obs
 
 def get_common_vars(ds1, ds2):

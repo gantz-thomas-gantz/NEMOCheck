@@ -12,7 +12,7 @@ tmp_dir=".tmp"
 # Create temporary directory
 mkdir -p "$tmp_dir"
 
-for i in $(seq -w 00 13); do
+for i in $(seq -w 00 14); do
     input_file="${input_dir}/nemo${i}_1m_201001_202212_grid_T.nc"
     tmp_file="${tmp_dir}/nemo${i}_2011_2022.nc"
     output_file="${output_dir}/nemo${i}_clim_2011_2022.nc"
