@@ -15,8 +15,11 @@ import dash_bootstrap_components as dbc
 
 # ---- Configuration ----
 DATA_DIR = "~/NEMOCheck/data/processed"
+
 DATA_DIR = os.path.expanduser(DATA_DIR)
+WEIGHTS_PATH = os.path.expanduser("~/NEMOCheck/data/weights/weights_bilinear_pmmh.nc")
 MESH_PATH = "~/NEMOCheck/data/model/orca05l75_domain_cfg_nemov5_10m.nc"
+
 
 VARIABLE_LABELS = {
     'tos': 'Sea Surface Temperature (tos, °C)',
@@ -68,7 +71,7 @@ def build_regridder():
     with open(os.devnull, 'w') as f, contextlib.redirect_stdout(f):
         regridder = xe.Regridder(
             arr, target_grid, method='bilinear',
-            filename='weights_bilinear_pmmh.nc',
+            filename=WEIGHTS_PATH,
             reuse_weights=True,
             ignore_degenerate=True,
             periodic=True
