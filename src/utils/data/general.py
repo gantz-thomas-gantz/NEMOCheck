@@ -8,6 +8,81 @@ from typing import Union
 import os
 import contextlib
 import regionmask
+import matplotlib.pyplot as plt
+import cartopy.crs as ccrs
+
+def show_coverage_mask_model(
+    model: xr.Dataset,
+    mesh: xr.Dataset,
+    var_name: str,
+    time_index: int = 0,
+    title: str = "Coverage Mask Model",
+    time_dim: str = "time"
+) -> None:
+    """
+    Display a global coverage mask for a model field at a given time index.
+
+    Highlights where the selected variable in the model dataset contains NaNs
+    (e.g., coastal masked areas or missing data) using a greyscale overlay.
+
+    Parameters
+    ----------
+    model : xr.Dataset
+        Dataset containing the 3D model field (with a named time dimension and two spatial dimensions).
+    mesh : xr.Dataset
+        Dataset containing 'glamf' (longitudes) and 'gphif' (latitudes),
+        aligned with the model field grid.
+    var_name : str
+        Name of the variable in `model` to analyze for coverage.
+    time_index : int, optional
+        Time index to visualize (default is 0).
+    title : str, optional
+        Title for the plot (default is "Coverage Mask Model").
+    time_dim : str, optional
+        Name of the time dimension in the model field (default is "time").
+
+    Returns
+    -------
+    None
+        Displays a matplotlib figure using cartopy.
+    """
+    if var_name not in model:
+        raise ValueError(f"Variable '{var_name}' not found in model dataset.")
+
+    if "glamf" not in mesh or "gphif" not in mesh:
+        raise ValueError("Mesh must contain 'glamf' (longitude) and 'gphif' (latitude).")
+
+    if time_dim not in model[var_name].dims:
+        raise ValueError(f"Time dimension '{time_dim}' not found in variable '{var_name}'.")
+
+    # Extract the field at the selected time index
+    field = model[var_name].isel({time_dim: time_index})
+    coverage_mask = field.notnull()
+    non_coverage_mask = ~coverage_mask
+
+    lonf = mesh['glamf'].values
+    latf = mesh['gphif'].values
+
+    fig = plt.figure(figsize=(12, 6))
+    crs = ccrs.PlateCarree()
+    ax = plt.subplot(1, 1, 1, projection=crs)
+    ax.set_extent([-180, 180, -80, 90], crs=crs)
+
+    # Plot areas with missing data in grey
+    im = ax.pcolormesh(
+        lonf, latf, non_coverage_mask.values,
+        transform=crs,
+        cmap='Greys',
+        shading='auto',
+        alpha=0.4
+    )
+
+    ax.coastlines(resolution='50m')
+    ax.set_title(title)
+    ax.gridlines(draw_labels=True)
+
+    plt.tight_layout()
+    plt.show()
 
 def fill_coastal_points_in_time(
     data: Union[xr.DataArray, xr.Dataset],

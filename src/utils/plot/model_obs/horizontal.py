@@ -20,7 +20,7 @@ DATA_DIR = os.path.join(BASE_DIR, '..', '..', '..', '..', 'data', 'processed')
 
 # Load climatology datasets for model and observations
 clim_obs = xr.open_dataset(os.path.join(DATA_DIR, 'combined_observations.nc'))
-clim_model = xr.open_dataset(os.path.join(DATA_DIR, 'model_new.nc'))
+clim_model = xr.open_dataset(os.path.join(DATA_DIR, 'model.nc'))
 clim_error = clim_model - clim_obs  # Compute error (model - obs) for all variables
 
 # Variable configuration

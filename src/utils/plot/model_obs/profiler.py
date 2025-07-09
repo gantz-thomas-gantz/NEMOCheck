@@ -29,7 +29,7 @@ PROCESSED_DIR = os.path.join(DATA_DIR, 'processed')
 
 # Load model and observation climatologies
 clim_obs = xr.open_dataset(os.path.join(PROCESSED_DIR, 'combined_observations.nc'))
-clim_model = xr.open_dataset(os.path.join(PROCESSED_DIR, 'model_new.nc'))
+clim_model = xr.open_dataset(os.path.join(PROCESSED_DIR, 'model.nc'))
 clim_error = clim_model - clim_obs  # Compute error (model - obs) for all variables
 
 def get_common_vars(ds1: xr.Dataset, ds2: xr.Dataset) -> list:
