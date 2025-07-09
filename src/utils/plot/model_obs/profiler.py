@@ -1,3 +1,7 @@
+# model_obs/profiler.py
+# Goal: Interactive Dash app for visualizing and analyzing model-observation error profiles along user-selected transects on a map.
+
+# ---- Imports ----
 import os
 import xarray as xr
 import numpy as np
@@ -9,6 +13,8 @@ import plotly.graph_objects as go
 import plotly.express as px
 from utils.plot.general import find_free_port
 
+# ---- Constants and data setup ----
+
 ALLOWED_VARS = {
     "sst": "Sea Surface Temperature (SST, °C)",
     "sss": "Sea Surface Salinity (SSS, PSU)",
@@ -16,13 +22,35 @@ ALLOWED_VARS = {
 }
 COLOR_CYCLE = px.colors.qualitative.Plotly
 
-clim_obs = xr.open_dataset(os.path.expanduser('~/NEMOCheck/data/processed/combined_observations.nc'))
-clim_model = xr.open_dataset(os.path.expanduser('~/NEMOCheck/data/processed/model_new.nc'))
-clim_error = clim_model - clim_obs
+# Paths
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DATA_DIR = os.path.join(BASE_DIR, '..', '..', '..', '..', 'data')
+PROCESSED_DIR = os.path.join(DATA_DIR, 'processed')
 
-def get_common_vars(ds1, ds2):
+# Load model and observation climatologies
+clim_obs = xr.open_dataset(os.path.join(PROCESSED_DIR, 'combined_observations.nc'))
+clim_model = xr.open_dataset(os.path.join(PROCESSED_DIR, 'model_new.nc'))
+clim_error = clim_model - clim_obs  # Compute error (model - obs) for all variables
+
+def get_common_vars(ds1: xr.Dataset, ds2: xr.Dataset) -> list:
+    """
+    Return variables present in both datasets and allowed for plotting.
+
+    Parameters
+    ----------
+    ds1 : xr.Dataset
+        First dataset.
+    ds2 : xr.Dataset
+        Second dataset.
+
+    Returns
+    -------
+    list
+        List of common variable names.
+    """
     return [v for v in ds1.data_vars if v in ds2.data_vars and v in ALLOWED_VARS]
 
+# Variable setup
 common_vars = get_common_vars(clim_model, clim_obs)
 DEFAULT_VAR = 'sst' if 'sst' in common_vars else (common_vars[0] if common_vars else None)
 initial_scale = {
@@ -32,10 +60,50 @@ initial_scale = {
 }
 initial_month = 3
 
+"""
+Dash application for interactive error profile exploration between model and observations.
+
+- Lets the user select a variable, color scale, and month for map and profile error plots.
+- Supports interactive selection of pairs of points on the map, drawing transects and error profiles between them.
+- Visualizes differences on a map (with transects) and as 1D error profiles along selected lines.
+- Designed for coder-style clarity: includes docstrings, type hints, and rich inline comments.
+- Data directory and file conventions are fixed; see README for requirements.
+
+Dependencies and definitions required elsewhere in the project:
+    - find_free_port: Function to find an available port for local hosting.
+    - DATA_DIR structure and processed NetCDF files as described in README.
+"""
 external_stylesheets = [dbc.themes.FLATLY]
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 
-def create_map_figure(variable, scale, month, selected_pairs, relayout_data=None):
+def create_map_figure(
+    variable: str,
+    scale: dict,
+    month: int,
+    selected_pairs: list,
+    relayout_data: dict = None
+) -> go.Figure:
+    """
+    Create the map figure showing model-observation error and user-selected transects.
+
+    Parameters
+    ----------
+    variable : str
+        Variable to plot.
+    scale : dict
+        Color scale dict with 'min' and 'max'.
+    month : int
+        Month to plot (1-based).
+    selected_pairs : list
+        List of dicts, each containing two points and a color.
+    relayout_data : dict, optional
+        Plotly relayout data (for zoom/pan).
+
+    Returns
+    -------
+    go.Figure
+        Plotly figure for the map.
+    """
     error_map = clim_error[variable].sel(month=month)
     z = error_map.values
     x = error_map['lon'].values
@@ -51,6 +119,7 @@ def create_map_figure(variable, scale, month, selected_pairs, relayout_data=None
         colorbar=dict(title="")
     ))
 
+    # Draw user-selected transects (pairs of points)
     for i, pair in enumerate(selected_pairs):
         p1, p2 = pair['points']
         color = pair['color']
@@ -80,6 +149,7 @@ def create_map_figure(variable, scale, month, selected_pairs, relayout_data=None
         yaxis=dict(showgrid=True, gridcolor='lightgray', zeroline=False, showline=True, linecolor='black', mirror=True, range=[min(y), max(y)]),
     )
 
+    # Preserve axis ranges if user zoomed/panned
     if relayout_data:
         x0 = relayout_data.get('xaxis.range[0]')
         x1 = relayout_data.get('xaxis.range[1]')
@@ -95,7 +165,15 @@ def create_map_figure(variable, scale, month, selected_pairs, relayout_data=None
 
     return fig
 
-def variable_dropdown():
+def variable_dropdown() -> dcc.Dropdown:
+    """
+    Create the variable selection dropdown.
+
+    Returns
+    -------
+    dcc.Dropdown
+        Dropdown for variable selection.
+    """
     return dcc.Dropdown(
         id='variable-dropdown',
         options=[{'label': ALLOWED_VARS[v], 'value': v} for v in common_vars],
@@ -104,7 +182,15 @@ def variable_dropdown():
         style={'marginBottom': '6px'}
     )
 
-def error_scale_inputs():
+def error_scale_inputs() -> dbc.InputGroup:
+    """
+    Create the input controls for color scale min/max.
+
+    Returns
+    -------
+    dbc.InputGroup
+        Input group for color scale.
+    """
     return dbc.InputGroup([
         dbc.InputGroupText("Min"),
         dbc.Input(id='scale-min', type='number', value=initial_scale.get(DEFAULT_VAR, {'min': -1})['min'], step=0.1, style={'width': '80px'}),
@@ -112,6 +198,8 @@ def error_scale_inputs():
         dbc.Input(id='scale-max', type='number', value=initial_scale.get(DEFAULT_VAR, {'max': 1})['max'], step=0.1, style={'width': '80px'}),
         dbc.Button("Update", id='update-scale-btn', n_clicks=0, color="secondary", outline=True, size="sm")
     ], size="sm", className="mb-1")
+
+# ---- App Layout ----
 
 app.layout = dbc.Container([
     dbc.Row([
@@ -182,6 +270,8 @@ app.layout = dbc.Container([
     dcc.Store(id='current-variable', data=DEFAULT_VAR),
 ], fluid=True)
 
+# ---- Callbacks ----
+
 @app.callback(
     Output('scale-min', 'value'),
     Output('scale-max', 'value'),
@@ -191,17 +281,33 @@ app.layout = dbc.Container([
     State('scale-min', 'value'),
     State('scale-max', 'value'),
 )
-def sync_scale_and_variable(variable, n_clicks, cur_min, cur_max):
+def sync_scale_and_variable(
+    variable: str,
+    n_clicks: int,
+    cur_min: float,
+    cur_max: float
+):
+    """
+    Synchronize color scale min/max with variable selection or update.
+
+    Returns
+    -------
+    Tuple
+        (new min, new max, new scale dictionary)
+    """
     ctx = callback_context
     triggered_id = ctx.triggered[0]['prop_id'].split('.')[0] if ctx.triggered else None
+    # If variable changed, load its default scale
     if triggered_id == 'variable-dropdown':
         defaults = initial_scale.get(variable, {'min': cur_min, 'max': cur_max})
         return defaults['min'], defaults['max'], defaults
+    # If user pressed update, use the entered min/max
     if triggered_id == 'update-scale-btn':
         if cur_min is not None and cur_max is not None and cur_min < cur_max:
             return cur_min, cur_max, {'min': cur_min, 'max': cur_max}
         else:
             return cur_min, cur_max, dash.no_update
+    # Fallback/default
     defaults = initial_scale.get(variable, {'min': cur_min, 'max': cur_max})
     return defaults['min'], defaults['max'], defaults
 
@@ -209,7 +315,15 @@ def sync_scale_and_variable(variable, n_clicks, cur_min, cur_max):
     Output('current-variable', 'data'),
     Input('variable-dropdown', 'value')
 )
-def store_current_variable(variable):
+def store_current_variable(variable: str) -> str:
+    """
+    Store the currently selected variable in a hidden dcc.Store.
+
+    Returns
+    -------
+    str
+        Selected variable.
+    """
     return variable
 
 @app.callback(
@@ -220,7 +334,21 @@ def store_current_variable(variable):
     Input('pair-store', 'data'),
     Input('map-plot', 'relayoutData'),
 )
-def update_map(variable, scale, month, store, relayout_data):
+def update_map(
+    variable: str,
+    scale: dict,
+    month: int,
+    store: dict,
+    relayout_data: dict
+) -> go.Figure:
+    """
+    Update the map plot based on variable, scale, month, and selected pairs.
+
+    Returns
+    -------
+    go.Figure
+        Updated map figure.
+    """
     return create_map_figure(variable, scale, month, store['pairs'], relayout_data)
 
 @app.callback(
@@ -231,7 +359,20 @@ def update_map(variable, scale, month, store, relayout_data):
     State('pair-store', 'data'),
     prevent_initial_call=True
 )
-def update_pairs(click_data, reset_clicks, delete_clicks, store):
+def update_pairs(
+    click_data,
+    reset_clicks,
+    delete_clicks,
+    store
+) -> dict:
+    """
+    Update the pair-store: handle point selection, reset, and deletion.
+
+    Returns
+    -------
+    dict
+        Updated pair-store with current points/pairs.
+    """
     ctx = callback_context
     triggered = ctx.triggered[0]['prop_id'].split('.')[0] if ctx.triggered else None
 
@@ -251,7 +392,7 @@ def update_pairs(click_data, reset_clicks, delete_clicks, store):
         lon = click_data['points'][0]['x']
         lat = click_data['points'][0]['y']
         color = COLOR_CYCLE[len(store['pairs']) % len(COLOR_CYCLE)]
-
+        # Add a point, and if two selected, convert to a pair and reset
         store['points'].append({'lat': lat, 'lon': lon})
         if len(store['points']) == 2:
             store['pairs'].append({
@@ -265,7 +406,15 @@ def update_pairs(click_data, reset_clicks, delete_clicks, store):
     Output('legend-container', 'children'),
     Input('pair-store', 'data')
 )
-def update_legend(store):
+def update_legend(store: dict):
+    """
+    Update the legend showing all selected pairs.
+
+    Returns
+    -------
+    list or str
+        List of HTML children for the legend, or a message.
+    """
     selected_pairs = store['pairs']
     if not selected_pairs:
         return "No point pairs selected."
@@ -294,21 +443,36 @@ def update_legend(store):
     Input('current-scale', 'data'),
     Input('current-variable', 'data')
 )
-def plot_profiles(store, month, scale, variable):
+def plot_profiles(
+    store: dict,
+    month: int,
+    scale: dict,
+    variable: str
+) -> go.Figure:
+    """
+    Plot error profiles for all user-selected pairs (transects).
+
+    Returns
+    -------
+    go.Figure
+        Plotly figure with error profiles.
+    """
     fig = go.Figure()
     for pair in store['pairs']:
         p1, p2 = pair['points']
         color = pair['color']
-        n_samples = 100
+        n_samples = 100  # Number of points along transect
         lats = np.linspace(p1['lat'], p2['lat'], n_samples)
         lons = np.linspace(p1['lon'], p2['lon'], n_samples)
 
+        # Interpolate field to transect
         lat_grid, lon_grid = np.meshgrid(clim_error[variable].lat.values, clim_error[variable].lon.values, indexing='ij')
         field = clim_error[variable].sel(month=month).values
         sample_points = np.vstack([lat_grid.ravel(), lon_grid.ravel()]).T
         values = field.ravel()
         profile_vals = griddata(sample_points, values, (lats, lons), method='linear')
 
+        # Approximate distance along transect in km (using crude conversion)
         distances = np.sqrt((lats - lats[0]) ** 2 + (lons - lons[0]) ** 2) * 111
 
         fig.add_trace(go.Scatter(

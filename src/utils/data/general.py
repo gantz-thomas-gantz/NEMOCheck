@@ -1,3 +1,6 @@
+# utils/data/general.py
+# Goal: Provide reusable data utilities for filling coastal NaNs, regridding, and normalizing model files for oceanographic climatology analysis.
+
 import numpy as np
 import xarray as xr
 import scipy.ndimage
@@ -31,9 +34,11 @@ def fill_coastal_points_in_time(
         Data with coastal NaNs filled.
     """
     def fill_single_var(da: xr.DataArray) -> xr.DataArray:
+        # Copy to avoid modifying input in-place
         filled = da.copy(deep=True)
+        # Convolution kernel for 8-point neighbors
         kernel = np.array([[1,1,1], [1,0,1], [1,1,1]])
-        # Detect spatial dimensions
+        # Identify spatial axes (must be 2D spatial + 1 time)
         spatial_dims = [d for d in filled.dims if d != time_dim]
         if len(spatial_dims) != 2:
             raise ValueError(f"Expected 2 spatial dimensions, found: {spatial_dims}")
@@ -45,22 +50,25 @@ def fill_coastal_points_in_time(
 
             for _ in range(max_iterations):
                 nan_mask = np.isnan(arr)
-                # Pad latitude (y) manually with zeros
+                # Pad latitude (y) manually with zeros; longitude is periodic (mode="wrap")
                 padded_mask = np.pad(~nan_mask, ((1,1), (0,0)), mode="constant", constant_values=False)
                 padded_data = np.pad(np.nan_to_num(arr), ((1,1), (0,0)), mode="constant", constant_values=0)
 
+                # Convolve to count valid neighbors (excluding center point)
                 neighbor_count = scipy.ndimage.convolve(
                     padded_mask.astype(int),
                     kernel,
                     mode="wrap"
                 )[1:-1, :]  # remove padded rows
 
+                # Convolve to sum valid neighbors
                 neighbor_sum = scipy.ndimage.convolve(
                     padded_data,
                     kernel,
                     mode="wrap"
                 )[1:-1, :]  # remove padded rows
 
+                # Fill any NaNs with at least one valid neighbor (average)
                 fill_condition = nan_mask & (neighbor_count > 0)
                 if not np.any(fill_condition):
                     break
@@ -75,15 +83,16 @@ def fill_coastal_points_in_time(
     if isinstance(data, xr.DataArray):
         return fill_single_var(data)
     elif isinstance(data, xr.Dataset):
-        # Apply to all data variables; preserve coordinates and attributes
+        # Apply filling to each variable independently, preserving coords/attrs
         filled_vars = {vn: fill_single_var(data[vn]) for vn in data.data_vars}
         return xr.Dataset(filled_vars, coords=data.coords, attrs=data.attrs)
     else:
         raise TypeError("Input must be an xarray DataArray or Dataset")
 
+# Define a default 1x1 global grid for regridding (used in normalization)
 target_grid = xr.Dataset({
     'lon': (['lon'], np.arange(0.5, 360, 1)),      
-    'lat': (['lat'], np.arange(-89.5, 89.5 + 1))   
+    'lat': (['lat'], np.arange(-89.5, 89.5 + 1))   # +1 to include 89.5
 })
 
 def normalize_model_file(
@@ -117,7 +126,7 @@ def normalize_model_file(
         IOError: If input files cannot be read or output cannot be written.
         KeyError: If expected variables are missing from input files.
     """
-    # Prepare target regrid grid
+    # Prepare target regrid grid (1x1 global)
     target_grid = xr.Dataset({
         'lon': (['lon'], np.arange(0.5, 360, 1)),      
         'lat': (['lat'], np.arange(-89.5, 90.5, 1))    # 90.5 (not 89.5+1) to include 89.5
@@ -131,7 +140,7 @@ def normalize_model_file(
     model = xr.open_dataset(input_path)
     mesh = xr.open_dataset(mesh_path)
 
-    # Select and rename variables, and restrict to 2012-2022 time period
+    # Select and rename variables, restrict to 2012-2022 time period
     model = model[["tos", "sos", "mldr10_1"]].rename({
         "tos": "sst",
         "sos": "sss",
@@ -141,7 +150,7 @@ def normalize_model_file(
     # Compute monthly climatology (average over years by month)
     model = model.groupby("time_counter.month").mean(dim="time_counter")
 
-    # Rename spatial coordinates and assign mesh coordinates
+    # Rename spatial coordinates and assign mesh coordinates for spatial alignment
     model = model.rename({
         'nav_lon': 'lon',
         'nav_lat': 'lat',
@@ -170,13 +179,13 @@ def normalize_model_file(
     # Regrid model data to target 1x1 grid
     model = regridder(model)
 
-    # Ensure longitude is in [0, 360), sort by lon/lat, transpose axes
+    # Ensure longitude is in [0, 360), sort by lon/lat, transpose axes for CF convention
     model['lon'] = (model['lon'] + 360) % 360
     model = model.sortby('lon')
     model = model.sortby('lat')
     model = model.transpose('month', 'lat', 'lon')
 
-    # Apply ocean-only mask
+    # Apply ocean-only mask to remove land points after regridding
     model = model.where(ocean_mask)
 
     # Set CF-compliant coordinate metadata

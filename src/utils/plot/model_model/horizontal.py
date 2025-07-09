@@ -1,3 +1,7 @@
+# model_model/horizontal.py
+# Goal: Interactive Dash app for visualizing and comparing horizontal (map and timeseries) differences between two model datasets.
+
+# ---- Imports ----
 import os
 import re
 import dash
@@ -12,14 +16,14 @@ from utils.plot.general import find_free_port
 from utils.data.general import fill_coastal_points_in_time
 import regionmask
 import dash_bootstrap_components as dbc
+from typing import Any, Dict, List, Optional
 
 # ---- Configuration ----
-DATA_DIR = "~/NEMOCheck/data/processed"
-
-DATA_DIR = os.path.expanduser(DATA_DIR)
-WEIGHTS_PATH = os.path.expanduser("~/NEMOCheck/data/weights/weights_bilinear_pmmh.nc")
-MESH_PATH = "~/NEMOCheck/data/model/orca05l75_domain_cfg_nemov5_10m.nc"
-
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DATA_DIR = os.path.join(BASE_DIR, '..', '..', '..', '..', 'data')
+PROCESSED_DIR = os.path.join(DATA_DIR, 'processed')
+WEIGHTS_PATH = os.path.join(DATA_DIR, 'weights', 'weights_bilinear_pmmh.nc')
+MESH_PATH = os.path.join(DATA_DIR, 'model', 'orca05l75_domain_cfg_nemov5_10m.nc')
 
 VARIABLE_LABELS = {
     'tos': 'Sea Surface Temperature (tos, °C)',
@@ -34,7 +38,7 @@ VARIABLE_LABELS = {
 AVAILABLE_VARIABLES = list(VARIABLE_LABELS.keys())
 COLOR_CYCLE = px.colors.qualitative.Plotly
 initial_scale = {'min': -4, 'max': 4}
-initial_month = 3  
+initial_month = 3  # Default starting month
 
 # ---- Load mesh and land mask ONCE ----
 mesh = xr.open_dataset(MESH_PATH)
@@ -48,15 +52,32 @@ target_grid = xr.Dataset({
 land_mask = regionmask.defined_regions.natural_earth_v5_0_0.land_110.mask(target_grid)
 ocean_mask = land_mask.isnull()
 
+# Search for available processed model files
 files = [
-    fn for fn in sorted(os.listdir(DATA_DIR))
+    fn for fn in sorted(os.listdir(PROCESSED_DIR))
     if re.match(r"^nemo.*_clim_.*_.*.nc$", fn)
 ]
 
-def build_regridder():
+
+def build_regridder() -> xe.Regridder:
+    """
+    Build an xESMF regridder for mapping model data onto the target grid.
+
+    Returns
+    -------
+    xe.Regridder
+        Regridder object for bilinear interpolation onto target_grid.
+
+    Raises
+    ------
+    FileNotFoundError
+        If no suitable .nc files are found for constructing the regridder.
+    ValueError
+        If none of the AVAILABLE_VARIABLES are present in the sample file.
+    """
     if not files:
-        raise FileNotFoundError("No .nc files found in DATA_DIR for regridder construction")
-    sample_path = os.path.join(DATA_DIR, files[0])
+        raise FileNotFoundError("No .nc files found in PROCESSED_DIR for regridder construction")
+    sample_path = os.path.join(PROCESSED_DIR, files[0])
     ds = xr.open_dataset(sample_path)
     for variable_name in AVAILABLE_VARIABLES:
         if variable_name in ds.variables:
@@ -80,10 +101,41 @@ def build_regridder():
 
 regridder = build_regridder()
 
+# ---- Dash app setup ----
+"""
+Dash application for interactive horizontal (map-based) model-model difference visualization.
+
+- Lets the user choose and compare two processed model files on a map and as time series.
+- Supports interactive selection of variable, month, color scale, and spatial points.
+- Visualizes differences both spatially (on a map) and temporally (as time series).
+- Designed for coder-style clarity: includes docstrings, type hints, and inline comments.
+- Data directory and file conventions are fixed; see README for requirements.
+
+Dependencies and definitions required elsewhere in the project:
+    - fill_coastal_points_in_time: Function to fill coastal missing values in time.
+    - find_free_port: Function to find an available port for local hosting.
+    - DATA_DIR structure and processed NetCDF files as described in README.
+"""
 external_stylesheets = [dbc.themes.FLATLY]
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 
-def model_file_dropdown(component_id, label):
+
+def model_file_dropdown(component_id: str, label: str) -> dbc.Col:
+    """
+    Create a dropdown Dash component for model file selection.
+
+    Parameters
+    ----------
+    component_id : str
+        Dash component ID.
+    label : str
+        Label to display above dropdown.
+
+    Returns
+    -------
+    dbc.Col
+        Dash Bootstrap Column with dropdown.
+    """
     return dbc.Col([
         dbc.Label(label, style={'marginBottom': 0}),
         dcc.Dropdown(
@@ -94,7 +146,16 @@ def model_file_dropdown(component_id, label):
         ),
     ], width=3)
 
-def variable_dropdown():
+
+def variable_dropdown() -> dbc.Col:
+    """
+    Create a dropdown for selecting the variable to visualize.
+
+    Returns
+    -------
+    dbc.Col
+        Dash Bootstrap Column with dropdown for variable selection.
+    """
     return dbc.Col([
         dbc.Label("Variable", style={'marginBottom': 0}),
         dcc.Dropdown(
@@ -105,13 +166,31 @@ def variable_dropdown():
         ),
     ], width=3)
 
-def start_button_col():
+
+def start_button_col() -> dbc.Col:
+    """
+    Create a Dash column with the 'Start' button for triggering computation.
+
+    Returns
+    -------
+    dbc.Col
+        Column with Start button.
+    """
     return dbc.Col([
         dbc.Label(""),
         dbc.Button("Start", id="start-btn", n_clicks=0, color="primary", style={'width': '100%'})
     ], width=3)
 
-def error_scale_inputs():
+
+def error_scale_inputs() -> dbc.Col:
+    """
+    Create input controls for color scale min/max.
+
+    Returns
+    -------
+    dbc.Col
+        Column with min/max input and update button.
+    """
     return dbc.Col([
         dbc.Label("Scale", style={'marginBottom': 0}),
         dbc.InputGroup([
@@ -123,7 +202,16 @@ def error_scale_inputs():
         ], size="sm", className="mb-1"),
     ], width=4)
 
-def month_slider():
+
+def month_slider() -> dbc.Col:
+    """
+    Create a slider Dash component for month selection.
+
+    Returns
+    -------
+    dbc.Col
+        Column with month slider.
+    """
     return dbc.Col([
         dbc.Label("Month", style={'marginBottom': 0}),
         dcc.Slider(
@@ -137,7 +225,16 @@ def month_slider():
         ),
     ], width=4)
 
-def app_legend():
+
+def app_legend() -> html.Div:
+    """
+    Create the legend container for displaying selected points.
+
+    Returns
+    -------
+    html.Div
+        HTML div for legend.
+    """
     return html.Div(id='legend-container', style={
         'padding': '8px',
         'border': '1px solid #eee',
@@ -148,8 +245,18 @@ def app_legend():
         'overflowY': 'auto'
     })
 
-def reset_points_button():
+
+def reset_points_button() -> dbc.Button:
+    """
+    Create the 'Reset All' button for clearing selected points.
+
+    Returns
+    -------
+    dbc.Button
+        Dash Bootstrap Button.
+    """
     return dbc.Button('Reset All', id='reset-all-btn', n_clicks=0, color="outline-danger", size="sm", className="mt-4")
+
 
 # --- Layout ---
 app.layout = dbc.Container([
@@ -226,13 +333,23 @@ app.layout = dbc.Container([
     )
 ], fluid=True)
 
+# ---- Callbacks ----
+
 @app.callback(
     Output('current-scale', 'data'),
     Input('update-scale-btn', 'n_clicks'),
     State('scale-min', 'value'),
     State('scale-max', 'value')
 )
-def update_scale(n_clicks, scale_min, scale_max):
+def update_scale(n_clicks: int, scale_min: Optional[float], scale_max: Optional[float]) -> Any:
+    """
+    Callback to update the color scale for the error plot.
+
+    Returns
+    -------
+    dict or dash.no_update
+        Updated scale dictionary, or no update if invalid.
+    """
     if scale_min is not None and scale_max is not None and scale_min < scale_max:
         return {'min': scale_min, 'max': scale_max}
     return dash.no_update
@@ -241,7 +358,20 @@ def update_scale(n_clicks, scale_min, scale_max):
     Output('current-variable', 'data'),
     Input('variable-dropdown', 'value')
 )
-def store_current_variable(selected_variable):
+def store_current_variable(selected_variable: str) -> str:
+    """
+    Callback to store the currently selected variable in dcc.Store.
+
+    Parameters
+    ----------
+    selected_variable : str
+        Variable selected from dropdown.
+
+    Returns
+    -------
+    str
+        The selected variable.
+    """
     return selected_variable
 
 @app.callback(
@@ -252,12 +382,25 @@ def store_current_variable(selected_variable):
      State('model2-dropdown', 'value'),
      State('variable-dropdown', 'value')]
 )
-def compute_clim_error(n_clicks, first_model_file, second_model_file, selected_variable):
+def compute_clim_error(
+    n_clicks: int,
+    first_model_file: str,
+    second_model_file: str,
+    selected_variable: str
+) -> Any:
+    """
+    Callback to compute and store the climatological error (difference between model files).
+
+    Returns
+    -------
+    Tuple[dict, str] or Tuple[dash.no_update, str]
+        Data for plotting and loading dummy.
+    """
     if n_clicks == 0:
         return dash.no_update, ""
     if first_model_file and second_model_file and selected_variable:
-        path1 = os.path.join(DATA_DIR, first_model_file)
-        path2 = os.path.join(DATA_DIR, second_model_file)
+        path1 = os.path.join(PROCESSED_DIR, first_model_file)
+        path2 = os.path.join(PROCESSED_DIR, second_model_file)
         try:
             ds1 = xr.open_dataset(path1)
             ds2 = xr.open_dataset(path2)
@@ -287,7 +430,22 @@ def compute_clim_error(n_clicks, first_model_file, second_model_file, selected_v
     Input('map-plot', 'relayoutData'),
     Input('current-variable', 'data'),
 )
-def update_map(clim_error_dict, scale, selected_points, selected_month, relayout_data, selected_variable):
+def update_map(
+    clim_error_dict: dict,
+    scale: dict,
+    selected_points: List[dict],
+    selected_month: int,
+    relayout_data: dict,
+    selected_variable: str
+) -> go.Figure:
+    """
+    Callback to update the difference map plot.
+
+    Returns
+    -------
+    go.Figure
+        Plotly figure for the map.
+    """
     if not clim_error_dict or not selected_variable:
         return go.Figure()
     clim_error = xr.Dataset.from_dict(clim_error_dict)['error']
@@ -304,6 +462,7 @@ def update_map(clim_error_dict, scale, selected_points, selected_month, relayout
         zmax=scale['max'],
         colorbar=dict()  # No label on colorbar to match reference app
     ))
+    # Draw selected points
     for i, point in enumerate(selected_points or []):
         fig.add_trace(go.Scatter(
             x=[point['lon']],
@@ -343,6 +502,7 @@ def update_map(clim_error_dict, scale, selected_points, selected_month, relayout
             range=[np.nanmin(lats), np.nanmax(lats)]
         )
     )
+    # If user has zoomed/panned, preserve axis ranges
     if relayout_data:
         x0 = relayout_data.get('xaxis.range[0]')
         x1 = relayout_data.get('xaxis.range[1]')
@@ -365,7 +525,20 @@ def update_map(clim_error_dict, scale, selected_points, selected_month, relayout
     State('selected-points-store', 'data'),
     prevent_initial_call=True
 )
-def update_selected_points(clickData, remove_clicks, reset_clicks, selected_points):
+def update_selected_points(
+    clickData: Optional[dict],
+    remove_clicks: Optional[List[int]],
+    reset_clicks: Optional[int],
+    selected_points: Optional[List[dict]]
+) -> Any:
+    """
+    Callback to update the list of selected points on the map.
+
+    Returns
+    -------
+    list or dash.no_update
+        Updated list of points, or no update.
+    """
     ctx = callback_context
     if not ctx.triggered:
         raise dash.exceptions.PreventUpdate
@@ -383,6 +556,7 @@ def update_selected_points(clickData, remove_clicks, reset_clicks, selected_poin
         lon = clickData['points'][0]['x']
         lat = clickData['points'][0]['y']
         tol = 0.1
+        # Avoid duplicate points
         for pt in selected_points:
             if abs(pt['lat'] - lat) < tol and abs(pt['lon'] - lon) < tol:
                 return selected_points
@@ -395,7 +569,15 @@ def update_selected_points(clickData, remove_clicks, reset_clicks, selected_poin
     Output('legend-container', 'children'),
     Input('selected-points-store', 'data')
 )
-def update_legend(selected_points):
+def update_legend(selected_points: Optional[List[dict]]) -> Any:
+    """
+    Callback to update the legend with the list of selected points.
+
+    Returns
+    -------
+    list or str
+        List of HTML children for the legend, or empty string.
+    """
     if not selected_points:
         return ""
     legend_items = []
@@ -432,7 +614,20 @@ def update_legend(selected_points):
     Input('current-scale', 'data'),
     Input('current-variable', 'data')
 )
-def update_timeseries(selected_points, clim_error_dict, scale, selected_variable):
+def update_timeseries(
+    selected_points: Optional[List[dict]],
+    clim_error_dict: dict,
+    scale: dict,
+    selected_variable: str
+) -> go.Figure:
+    """
+    Callback to update the time series plot for selected points.
+
+    Returns
+    -------
+    go.Figure
+        Plotly figure for the time series.
+    """
     fig = go.Figure()
     all_months = np.arange(1, 13)
     variable_label = VARIABLE_LABELS.get(selected_variable, selected_variable)

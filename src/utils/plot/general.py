@@ -1,8 +1,11 @@
-import os, socket
+# utils/plot/general.py
+# Goal: Provide general-purpose helper functions for variable discovery, seasonal averaging, and networking utilities used in plotting and data loading across the app.
+
+import os
+import socket
 from typing import List
 import xarray as xr
 import pandas as pd
-
 
 def get_vars(path: str) -> List[str]:
     """
@@ -23,7 +26,6 @@ def get_vars(path: str) -> List[str]:
         # Return empty list if file cannot be read or is corrupted
         return []
 
-
 def get_common_vars(path1: str, path2: str) -> List[str]:
     """
     Identify variable names common to two NetCDF datasets.
@@ -38,7 +40,6 @@ def get_common_vars(path1: str, path2: str) -> List[str]:
     vars1 = set(get_vars(path1))
     vars2 = set(get_vars(path2))
     return sorted(list(vars1 & vars2))
-
 
 def find_free_port(start_port: int = 8050, max_tries: int = 100) -> int:
     """
@@ -75,7 +76,6 @@ def find_free_port(start_port: int = 8050, max_tries: int = 100) -> int:
     # All attempts failed: no available port found in the specified range
     raise RuntimeError("No free port found")
 
-
 def compute_seasonal_mean(
     path: str,
     time_dim: str = "time",
@@ -105,15 +105,15 @@ def compute_seasonal_mean(
     ds = xr.open_dataset(path)
     time = pd.to_datetime(ds[time_dim].values)
 
-    # Assign datetime index
+    # Assign datetime index to the dataset for easier slicing
     ds = ds.assign_coords({time_dim: time})
 
-    # Create a DataFrame to work with dates and filter for full seasons
+    # Create a DataFrame to work with times and extract year/month for grouping
     df = pd.DataFrame({time_dim: time})
     df["year"] = df[time_dim].dt.year
     df["month"] = df[time_dim].dt.month
 
-    # Define season labels
+    # Define season labels for each month
     def get_season_label(row):
         m = row["month"]
         if m in [12, 1, 2]:
@@ -127,11 +127,11 @@ def compute_seasonal_mean(
 
     df["season"] = df.apply(get_season_label, axis=1)
 
-    # Adjust DJF year (DJF 2022 = Dec 2021 + Jan/Feb 2022)
+    # Adjust DJF year so that DJF 2022 = Dec 2021 + Jan/Feb 2022, etc.
     df["season_year"] = df["year"]
     df.loc[df["month"] == 12, "season_year"] += 1
 
-    # Keep only complete seasons
+    # Keep only complete seasons (i.e., where all three constituent months exist)
     valid_seasons = (
         df.groupby(["season", "season_year"])
         .filter(lambda g: len(g) == 3)
@@ -146,11 +146,11 @@ def compute_seasonal_mean(
             (valid_seasons["season_year"] <= end_year)
         ]
 
-    # Build a mask to keep only valid times
+    # Build a mask to keep only valid times with full seasons
     valid_times = valid_seasons[time_dim].unique()
     ds = ds.sel({time_dim: ds[time_dim].isin(valid_times)})
 
-    # Recreate season labels for filtered dataset
+    # Recreate season labels for filtered dataset (since some times may have been dropped)
     def assign_season(time_index):
         seasons = []
         for t in time_index:
@@ -167,6 +167,6 @@ def compute_seasonal_mean(
 
     ds = ds.assign_coords(season=assign_season(ds[time_dim].values))
 
+    # Group by season and average over the time dimension
     return ds.groupby("season").mean(time_dim)
-
 
