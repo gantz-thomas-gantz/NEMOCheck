@@ -41,24 +41,54 @@ This document provides:
 
 ## ⚡ Quick Start
 
-```bash
-git clone git@github.com:gantz-thomas-gantz/NEMOCheck.git #https
-cd NEMOCheck
+Get started with NEMOCheck by following these steps:
 
-./env/install_env.sh
+1. **Install Git LFS (Large File Storage)**  
+   Git LFS is required to efficiently handle large files in this repository.
+   - On Ubuntu/Linux:
+     ```bash
+     sudo apt-get install git-lfs
+     ```
+   - On macOS (with Homebrew):
+     ```bash
+     brew install git-lfs
+     ```
 
-# Start JupyterLab in this environment as shown on the terminal after the above command.
+2. **Initialize Git LFS**  
+   Set up Git LFS for your user account:
+   ```bash
+   git lfs install
+   ```
 
-# Download git lfs
-```
+3. **Clone the Repository**  
+   Download the project code to your local machine:
+   ```bash
+   git clone https://github.com/gantz-thomas-gantz/NEMOCheck.git
+   cd NEMOCheck
+   ```
 
-- Run any notebook as usual in JupyterLab.
+4. **Set Up the Environment**  
+   Run the provided script to create a Python environment and install dependencies:
+   ```bash
+   ./env/install_env.sh
+   ```
+
+5. **Start JupyterLab**  
+   Once setup is complete, activate the environment and launch JupyterLab.  
+   The script will display the exact command you need to run (typically something like `conda activate ...` followed by `jupyter lab`).  
+   Follow the on-screen instructions.
+
+You are now ready to explore and use NEMOCheck in your browser via **JupyterLab**!
+
+- Open and run any notebook as usual in JupyterLab.
 - **Be sure to select the `nemocheck_env` kernel** in JupyterLab for compatibility.
 - You can also run interactive plotting scripts directly in the terminal, for example:
 
   ```bash
   python src/utils/plot/model-model/horizontal.py
   ```
+
+---
 
 ### 🔒 About the Environment Setup
 
