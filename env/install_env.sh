@@ -52,7 +52,7 @@ echo "Creating or updating environment '$env_name' from lock file..."
 micromamba create -y -n "$env_name" --file "$lock_file"
 
 echo "Installing local utils package in editable mode..."
-micromamba run -n "$env_name" pip install -e "$script_dir/../src/utils"
+micromamba run -n "$env_name" pip install -e "$script_dir/../"
 
 echo "Installing Jupyter kernel..."
 micromamba run -n "$env_name" python -m ipykernel install --user --name "$env_name"
