@@ -6,11 +6,54 @@ script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 lock_file="${script_dir}/conda-lock.yml"
 MICROMAMBA="${HOME}/bin/micromamba"
 
+# Detect OS and architecture
+unameOut="$(uname -s)"
+archOut="$(uname -m)"
+
+case "${unameOut}" in
+    Linux*)
+        OS=linux
+        ;;
+    Darwin*)
+        OS=osx
+        ;;
+    *)
+        echo "Unsupported OS: ${unameOut}"
+        exit 1
+        ;;
+esac
+
+case "${archOut}" in
+    x86_64*)
+        ARCH=64
+        ;;
+    arm64*|aarch64*)
+        ARCH=arm64
+        ;;
+    *)
+        echo "Unsupported architecture: ${archOut}"
+        exit 1
+        ;;
+esac
+
+# Compose download URL
+if [[ "$OS" == "linux" && "$ARCH" == "64" ]]; then
+    MICROMAMBA_URL="https://micro.mamba.pm/api/micromamba/linux-64/latest"
+elif [[ "$OS" == "linux" && "$ARCH" == "arm64" ]]; then
+    MICROMAMBA_URL="https://micro.mamba.pm/api/micromamba/linux-aarch64/latest"
+elif [[ "$OS" == "osx" && "$ARCH" == "64" ]]; then
+    MICROMAMBA_URL="https://micro.mamba.pm/api/micromamba/osx-64/latest"
+elif [[ "$OS" == "osx" && "$ARCH" == "arm64" ]]; then
+    MICROMAMBA_URL="https://micro.mamba.pm/api/micromamba/osx-arm64/latest"
+else
+    echo "Unsupported OS/architecture combination: ${OS}/${ARCH}"
+    exit 1
+fi
+
 # Download micromamba if missing
 if [ ! -f "$MICROMAMBA" ]; then
   mkdir -p "$HOME/bin"
-  curl -Ls https://micro.mamba.pm/api/micromamba/linux-64/latest \
-    | tar -xj -C "$HOME/bin" --strip-components=1 bin/micromamba
+  curl -Ls "$MICROMAMBA_URL" | tar -xj -C "$HOME/bin" --strip-components=1 bin/micromamba
   chmod +x "$MICROMAMBA"
 fi
 
