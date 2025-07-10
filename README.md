@@ -29,7 +29,6 @@ git clone git@github.com:gantz-thomas-gantz/NEMOCheck.git
 cd NEMOCheck
 
 ./env/install_env.sh
-micromamba activate nemocheck_env
 
 jupyter-lab
 ````
