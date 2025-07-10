@@ -3,7 +3,6 @@ set -euo pipefail
 
 env_name="nemocheck_env"
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-lock_file="${script_dir}/conda-lock.yml"
 MICROMAMBA="${HOME}/bin/micromamba"
 
 # Detect OS and architecture
@@ -27,7 +26,7 @@ case "${archOut}" in
     x86_64*)
         ARCH=64
         ;;
-    arm64*|aarch64*)
+    arm64*)
         ARCH=arm64
         ;;
     *)
@@ -36,11 +35,17 @@ case "${archOut}" in
         ;;
 esac
 
-# Compose download URL
+# Use the single conda-lock.yml file for all platforms
+lock_file="${script_dir}/conda-lock.yml"
+
+if [ ! -f "$lock_file" ]; then
+    echo "Lock file $lock_file not found!"
+    exit 1
+fi
+
+# Compose download URL for micromamba
 if [[ "$OS" == "linux" && "$ARCH" == "64" ]]; then
     MICROMAMBA_URL="https://micro.mamba.pm/api/micromamba/linux-64/latest"
-elif [[ "$OS" == "linux" && "$ARCH" == "arm64" ]]; then
-    MICROMAMBA_URL="https://micro.mamba.pm/api/micromamba/linux-aarch64/latest"
 elif [[ "$OS" == "osx" && "$ARCH" == "64" ]]; then
     MICROMAMBA_URL="https://micro.mamba.pm/api/micromamba/osx-64/latest"
 elif [[ "$OS" == "osx" && "$ARCH" == "arm64" ]]; then
@@ -69,6 +74,5 @@ fi
 echo "Environment '$env_name' is ready and available as a Jupyter kernel."
 echo "To launch JupyterLab using this environment, run:"
 echo "  \"$MICROMAMBA\" run -n \"$env_name\" jupyter-lab"
-
 
 

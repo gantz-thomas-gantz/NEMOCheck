@@ -65,7 +65,7 @@ cd NEMOCheck
 - The `conda-lock.yml` file was generated from `environment.yml` by running:
 
   ```bash
-  conda-lock lock -f environment.yml --micromamba -p linux-64 -p osx-64
+    conda-lock lock -f environment.yml --micromamba -p linux-64 -p osx-64 -p osx-arm64
   ```
 
 - This means the environment and code are intended to work on both **Linux** and **macOS** platforms.
