@@ -6,7 +6,7 @@
 
 ## 🚀 Abstract
 
-**NEMOCheck** is a robust validation and analysis toolkit for the [NEMO ocean model](https://www.nemo-ocean.eu/). It empowers researchers to perform thorough, reproducible, and insightful assessments of model performance. Supported comparison modes include both model–model and model–observation evaluations for essential oceanographic variables:
+**NEMOCheck** is a robust validation and analysis toolkit for the [NEMO ocean model](https://www.nemo-ocean.eu/). It empowers to perform thorough, reproducible, and insightful assessments of model performance. Supported comparison modes include both model–model and model–observation evaluations for essential oceanographic variables:
 
 - **Sea Surface Temperature (SST)**
 - **Sea Surface Salinity (SSS)**
@@ -20,7 +20,7 @@ NEMOCheck provides both interactive Jupyter notebooks for exploration and script
 
 - **Interactive Analysis:** Explore, plot, and tune parameters in Jupyter notebooks.
 - **Quantitative Diagnostics:** Powerful statistics tools (PCA, vertical profiles, zonal means, and more).
-- **Flexible Visualization:** Effortless side-by-side model/observation comparisons in 2D/3D.
+- **Flexible Visualization:** Effortless side-by-side model/observation comparisons.
 - **Automated Processing:** Scripts for climatology computation, data normalization, and standardization.
 - **Reproducible Environments:** Conda-lock guarantees bitwise identical dependencies on Linux and macOS.
 - **Easy Extensibility:** Plug in new configurations and methods with minimal friction.
@@ -80,7 +80,9 @@ The `data/` directory is structured as follows:
 data/
   ├── model/         # Raw NEMO outputs (horizontal fields, sections) & ORCA05 mesh
   ├── obs/           # Observational datasets (SST, SSS, MLD, EKE)
-  └── processed/     # Preprocessed, standardized files ready for analysis
+  ├── processed/     # Preprocessed, standardized files ready for analysis
+  ├── weights/       # Interpolation weight files
+  └── processing/    # Scripts for data processing
 ```
 
 ### 🛠️ Data Processing
@@ -156,7 +158,7 @@ NEMOCheck/
 
 **New users should begin with the `src/interactive/` notebooks**, particularly:
 
-- **`plotting_tool.ipynb`** 🎨 — **The crown jewel!** Features gorgeous, publication-ready interactive visualizations for comparing models and observations. Perfect for exploration and generating figures for papers.
+- **`plotting_tool.ipynb`** 🎨 — **The crown jewel!** Features gorgeous, interactive visualizations for comparing models and observations. Perfect for exploration.
 
 - **`numerical_schemes.ipynb`** 🔍 — Deep dive into model numerical schemes and their impact on results.
 
