@@ -22,7 +22,9 @@ dependencies = [
     "scipy",
     "xarray",
     "xesmf",
-    "netCDF4"
+    "netCDF4",
+    "pyproj",  
+    "proj"
 ]
 
 [tool.setuptools.packages.find]

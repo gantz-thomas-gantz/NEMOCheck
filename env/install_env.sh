@@ -17,7 +17,7 @@ fi
 # Create or update environment (no activation needed)
 "$MICROMAMBA" create -y -n "$env_name" --file "$lock_file"
 
-# Install local utils package in editable mode (no activation needed)
+# Install local utils package in editable mode
 "$MICROMAMBA" run -n "$env_name" pip install -e "$script_dir/../"
 
 # Install Jupyter kernel
@@ -25,3 +25,4 @@ fi
 
 echo "Environment '$env_name' is ready as a Jupyter kernel."
 echo "You can select it in Jupyter Lab's kernel list."
+

@@ -17,4 +17,6 @@ dependencies:
   - xarray
   - xesmf 
   - netCDF4
+  - pyproj  
+  - proj
   - pip   
