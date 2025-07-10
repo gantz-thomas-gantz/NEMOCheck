@@ -1,6 +1,14 @@
-*.nc
+# Python bytecode
 *.pyc
+
+# Jupyter Notebook checkpoints
 *-checkpoint.*
 .ipynb_checkpoints/
+
+# Python packaging
 *egg-info/
+
+# Model output files (NEMO)
+nemo??_1m_201001_202212_grid_T.nc
+nemo??_1m_201001_202212_grid_T_new.nc
 

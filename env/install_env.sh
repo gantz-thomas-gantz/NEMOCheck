@@ -59,7 +59,6 @@ micromamba run -n "$env_name" python -m ipykernel install --user --name "$env_na
 
 echo ""
 echo "Environment '$env_name' is ready."
-echo "To activate it in this session: micromamba activate $env_name"
-echo "In future sessions, just open a new terminal and run: micromamba activate $env_name"
+echo "To activate it: >> micromamba activate $env_name" $env_name"
 
 
