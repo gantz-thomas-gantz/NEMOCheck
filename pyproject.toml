@@ -11,11 +11,18 @@ authors = [
   { name = "Thomas Gantz" }
 ]
 dependencies = [
-  "numpy",
-  "xarray",
-  "matplotlib",
-  "netCDF4",
-  "pandas"
+    "cartopy",
+    "dash",
+    "dash_bootstrap_components",
+    "matplotlib",
+    "numpy",
+    "pandas",
+    "plotly",
+    "regionmask",
+    "scipy",
+    "xarray",
+    "xesmf",
+    "netCDF4"
 ]
 
 [tool.setuptools.packages.find]

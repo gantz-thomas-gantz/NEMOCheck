@@ -15,5 +15,6 @@ dependencies:
   - regionmask
   - scipy
   - xarray
-  - xesmf     
+  - xesmf 
+  - netCDF4
   - pip   

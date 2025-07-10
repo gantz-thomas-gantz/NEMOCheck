@@ -4,6 +4,36 @@
 
 ## Quick Start
 
+```bash
+git clone git@github.com:gantz-thomas-gantz/NEMOCheck.git
+cd NEMOCheck
+
+./env/install_env.sh
+micromamba activate nemocheck_env
+
+jupyter-lab
+````
+
+* Run any notebook as usual in JupyterLab.
+* Make sure to select the `nemocheck_env` kernel in JupyterLab to use the correct environment.
+* You can also run interactive plotting scripts directly in the terminal, for example:
+
+```bash
+python src/utils/plot/model-model/horizontal.py
+```
+
+### About the environment setup
+
+* The install script uses `conda-lock.yml`, which pins **all dependencies** with exact versions for reproducibility.
+* For a more human-readable list of dependencies, see `environment.yml`.
+* The `conda-lock.yml` file was generated from `environment.yml` by running:
+
+```bash
+conda-lock lock -f environment.yml --micromamba -p linux-64 -p osx-64
+```
+
+* This means the environment and code are intended to work on both **Linux** and **macOS** platforms.
+
 ## Data
 
 The `data/` directory is structured as follows:
