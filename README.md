@@ -74,9 +74,7 @@ Get started with NEMOCheck by following these steps:
    ```
 
 5. **Start JupyterLab**  
-   Once setup is complete, activate the environment and launch JupyterLab.  
-   The script will display the exact command you need to run (typically something like `conda activate ...` followed by `jupyter lab`).  
-   Follow the on-screen instructions.
+   Once setup is complete, activate the environment and launch JupyterLab. Follow the on-screen instructions.
 
 You are now ready to explore and use NEMOCheck in your browser via **JupyterLab**!
 
