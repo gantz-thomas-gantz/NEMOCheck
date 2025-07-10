@@ -1,28 +1,45 @@
-# NEMOCheck
+# 🌊 NEMOCheck
 
-## Abstract
+> **A comprehensive, modular, and reproducible framework for validating and analyzing NEMO ocean model simulations**
 
-NEMOCheck is a comprehensive validation and analysis framework for NEMO (Nucleus for European Modelling of the Ocean). This repository provides a suite of tools for evaluating ocean model performance through model-model and model-observation comparisons across multiple oceanographic variables including sea surface temperature (SST), sea surface salinity (SSS), mixed layer depth (MLD), and eddy kinetic energy (EKE).
+---
 
-The framework offers both interactive and non-interactive analysis capabilities:
-- **Interactive tools**: Jupyter notebooks for exploratory data analysis, plotting, and parameter tuning
-- **Quantitative analysis**: Statistical evaluation including PCA, vertical profiles, and zonal averaging
-- **Visualization**: Horizontal and vertical plotting utilities for model output and observational data comparison
-- **Data processing**: Automated climatology computation and data standardization workflows
+## 🚀 Abstract
 
-NEMOCheck supports multiple NEMO configurations and provides a reproducible environment with locked dependencies for consistent results across Linux and macOS platforms. The modular design allows users to easily incorporate new model configurations and extend the analysis capabilities for their specific validation needs.
+**NEMOCheck** is a robust validation and analysis toolkit for the [NEMO ocean model](https://www.nemo-ocean.eu/). It empowers researchers to perform thorough, reproducible, and insightful assessments of model performance. Supported comparison modes include both model–model and model–observation evaluations for essential oceanographic variables:
 
-## Model Configurations
+- **Sea Surface Temperature (SST)**
+- **Sea Surface Salinity (SSS)**
+- **Mixed Layer Depth (MLD)**
 
-For detailed information about the different NEMO model configurations supported by this framework, please refer to our comprehensive documentation:
+NEMOCheck provides both interactive Jupyter notebooks for exploration and scripting, as well as non-interactive workflows for automation—all within a locked, reproducible conda environment. The modular design means you can easily extend analyses to new model configurations and diagnostics.
 
-📄 **[Model Configurations Guide](docs/tests_orca05.pdf)**
+---
+
+## 🧰 Features
+
+- **Interactive Analysis:** Explore, plot, and tune parameters in Jupyter notebooks.
+- **Quantitative Diagnostics:** Powerful statistics tools (PCA, vertical profiles, zonal means, and more).
+- **Flexible Visualization:** Effortless side-by-side model/observation comparisons in 2D/3D.
+- **Automated Processing:** Scripts for climatology computation, data normalization, and standardization.
+- **Reproducible Environments:** Conda-lock guarantees bitwise identical dependencies on Linux and macOS.
+- **Easy Extensibility:** Plug in new configurations and methods with minimal friction.
+
+---
+
+## 🧩 Supported Model Configurations
+
+For a comprehensive overview of supported NEMO configurations, check out:
+
+[![Model Configurations Guide](docs/preview_orca05.png)](docs/tests_orca05.pdf)
 
 This document provides:
 - Overview of supported NEMO configurations
 - Configuration-specific parameters and settings
 
-## Quick Start
+---
+
+## ⚡ Quick Start
 
 ```bash
 git clone git@github.com:gantz-thomas-gantz/NEMOCheck.git
@@ -30,88 +47,143 @@ cd NEMOCheck
 
 ./env/install_env.sh
 
-Start the jupyter-lab in this environment as shown on the terminal after above command.
-````
-
-* Run any notebook as usual in JupyterLab.
-* Make sure to select the `nemocheck_env` kernel in JupyterLab to use the correct environment.
-* You can also run interactive plotting scripts directly in the terminal, for example:
-
-```bash
-python src/utils/plot/model-model/horizontal.py
+# Start JupyterLab in this environment as shown on the terminal after the above command.
 ```
 
-### About the environment setup
+- Run any notebook as usual in JupyterLab.
+- **Be sure to select the `nemocheck_env` kernel** in JupyterLab for compatibility.
+- You can also run interactive plotting scripts directly in the terminal, for example:
 
-* The install script uses `conda-lock.yml`, which pins **all dependencies** with exact versions for reproducibility.
-* For a more human-readable list of dependencies, see `environment.yml`.
-* The `conda-lock.yml` file was generated from `environment.yml` by running:
+  ```bash
+  python src/utils/plot/model-model/horizontal.py
+  ```
 
-```bash
-conda-lock lock -f environment.yml --micromamba -p linux-64 -p osx-64
-```
+### 🔒 About the Environment Setup
 
-* This means the environment and code are intended to work on both **Linux** and **macOS** platforms.
+- The install script uses `conda-lock.yml`, which pins **all dependencies** with exact versions for reproducibility.
+- For a more human-readable list of dependencies, see `environment.yml`.
+- The `conda-lock.yml` file was generated from `environment.yml` by running:
 
-## Data
+  ```bash
+  conda-lock lock -f environment.yml --micromamba -p linux-64 -p osx-64
+  ```
+
+- This means the environment and code are intended to work on both **Linux** and **macOS** platforms.
+
+---
+
+## 🗃️ Data Directory Structure
 
 The `data/` directory is structured as follows:
 
-* `data/model/`: Raw NEMO output (horizontal fields and equatorial sections) and the ORCA05 mesh.
-* `data/obs/`: Observational data for SST, SSS, MLD, and EKE.
-* `data/processed/`: Preprocessed data ready for analysis.
+```text
+data/
+  ├── model/         # Raw NEMO outputs (horizontal fields, sections) & ORCA05 mesh
+  ├── obs/           # Observational datasets (SST, SSS, MLD, EKE)
+  └── processed/     # Preprocessed, standardized files ready for analysis
+```
 
-### Data Processing
+### 🛠️ Data Processing
 
 Processed data is generated via one of the following methods:
 
-* **Climatology computation bash script**
-  Script: `data/compute_climatology.sh`
-  Output: `data/processed/nemo<00>_clim_2011_2022.nc`
-  Usage: Horizontal model–model comparison: : `src/interactive/plotting_tool`
+- **Climatology computation bash script**
+  - Script: `data/compute_climatology.sh`
+  - Output: `data/processed/nemo<00>_clim_2011_2022.nc`
+  - Usage: Horizontal model–model comparison: `src/interactive/plotting_tool`
 
-* **Processing notebook**
-  Notebook: `data/processing.ipynb`
-  Output: `data/processed/model.nc`, `data/processed/combined_observations.nc`
-  Usage:
+- **Processing notebook**
+  - Notebook: `data/processing.ipynb`
+  - Output: `data/processed/model.nc`, `data/processed/combined_observations.nc`
+  - Usage:
+    - Horizontal model–obs comparison: `src/interactive/plotting_tool`
+    - Error profiles for model–obs: `src/interactive_plotting_tool/`
+    - Non-interactive SST diagnostics: `src/non-interactive/sst.ipynb`
 
-  * Horizontal model–obs comparison: `src/interactive/plotting_tool`
-  * Error profiles for model–obs: `src/interactive_plotting_tool/`
-  * Non-interactive SST diagnostics: `src/non-interactive/sst.ipynb`
-
-* **Model normalization function**
-  Function: `normalize_model_file()` in `src/utils/data/general.py`
-  Output: `data/processed/nemo<00>.nc`
-  Usage:
-
-  * `src/quantitative/eke.ipynb`
-  * `src/quantitative/zonal_sst.ipynb`
+- **Model normalization function**
+  - Function: `normalize_model_file()` in `src/utils/data/general.py`
+  - Output: `data/processed/nemo<00>.nc`
+  - Usage:
+    - `src/quantitative/eke.ipynb`
+    - `src/quantitative/zonal_sst.ipynb`
 
 Further details on the data pipeline are documented at the top of `data/processing.ipynb`.
 
-### File Types
+#### 📄 File Types
 
-* `model.nc` is derived from the `00` configuration and uses an MLD criterion that matches the observational dataset.
-* `nemo<00>.nc` contains SST, SSS, and MLD with an internally consistent MLD definition (but not necessarily consistent with observations) and is interpolated to a regular 1° grid.
-* `nemo<00>_clim_2011_2022.nc` retains all model variables on the native grid for inter-model comparisons.
+- **`model.nc`**: Derived from the `00` configuration and uses an MLD criterion that matches the observational dataset.
+- **`nemo<00>.nc`**: Contains SST, SSS, and MLD (model definition), interpolated to a regular 1° grid.
+- **`nemo<00>_clim_2011_2022.nc`**: Retains all model variables on the native grid for inter-model comparisons.
 
-### Adding a New Configuration
+---
+
+## 📁 Repository Structure
+
+```text
+NEMOCheck/
+├── 📄 README.md              # You are here!
+├── 📄 LICENSE               # CeCILL FREE SOFTWARE License
+├── 📄 pyproject.toml        # Python package configuration
+├── 🗂️ env/                   # Environment setup
+│   ├── environment.yml       # Human-readable dependencies
+│   ├── conda-lock.yml        # Locked dependencies for reproducibility
+│   └── install_env.sh        # One-click environment setup
+├── 🗂️ data/                  # Data storage and processing
+│   └── processing/           # Data pipeline scripts & notebooks
+├── 🗂️ docs/                  # Documentation files
+└── 🗂️ src/                   # Main source code
+    ├── 🎯 interactive/        # ⭐ Interactive Jupyter notebooks (START HERE!)
+    │   ├── plotting_tool.ipynb     # 🌟 Beautiful interactive plots & comparisons
+    │   └── numerical_schemes.ipynb # Model scheme analysis
+    ├── 📊 quantitative/       # Statistical analysis notebooks
+    │   ├── eke.ipynb          # Eddy kinetic energy analysis
+    │   ├── pca.ipynb          # Principal component analysis
+    │   ├── vertical.ipynb     # Vertical profile diagnostics
+    │   └── zonal_sst.ipynb    # Zonal SST analysis
+    ├── 🔬 non-interactive/    # Automated analysis scripts
+    │   └── sst.ipynb          # Sea surface temperature diagnostics
+    ├── 🧠 understanding/      # Model understanding tools
+    │   ├── mesh.ipynb         # Grid and mesh analysis
+    │   └── plotting.ipynb     # Plotting utilities exploration
+    └── 🛠️ utils/              # Reusable utility modules
+        ├── data/              # Data processing utilities
+        └── plot/              # Visualization utilities
+            ├── model_model/   # Model-to-model comparison plots
+            └── model_obs/     # Model-to-observation comparison plots
+```
+
+### 🌟 Where to Start
+
+**New users should begin with the `src/interactive/` notebooks**, particularly:
+
+- **`plotting_tool.ipynb`** 🎨 — **The crown jewel!** Features gorgeous, publication-ready interactive visualizations for comparing models and observations. Perfect for exploration and generating figures for papers.
+
+- **`numerical_schemes.ipynb`** 🔍 — Deep dive into model numerical schemes and their impact on results.
+
+The interactive notebooks provide an intuitive entry point to NEMOCheck's capabilities, with rich visualizations that make complex oceanographic data immediately accessible and interpretable.
+
+---
+
+## ➕ Adding a New Configuration
 
 To include a new NEMO configuration in the analysis:
 
 1. Open the last cell of `data/processing/processing.ipynb`, update the `cfgs` list, and re-run the cell.
 2. Open `data/compute_climatology.sh`, update the `cfgs` list, and re-run the script.
 
-## References
+---
+
+## 📚 References
 
 **Gurvan Madec (2024).** *NEMO Ocean Engine Reference Manual* (v5.0). Zenodo. https://doi.org/10.5281/zenodo.14515373
 
+---
 
-### How to Cite This Framework
+## 📖 Citation
 
-If you use NEMOCheck please consider citing this repository:
+If you use NEMOCheck, please consider citing this repository:
 
-```
+```bibtex
 @software{nemocheck,
   author = {Thomas Gantz},
   title = {NEMOCheck: Validation and Analysis Framework for NEMO Ocean Model},
@@ -119,7 +191,6 @@ If you use NEMOCheck please consider citing this repository:
   year = {2025}
 }
 ```
-
 
 
 
