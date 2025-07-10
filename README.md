@@ -2,6 +2,26 @@
 
 ## Abstract
 
+NEMOCheck is a comprehensive validation and analysis framework for NEMO (Nucleus for European Modelling of the Ocean). This repository provides a suite of tools for evaluating ocean model performance through model-model and model-observation comparisons across multiple oceanographic variables including sea surface temperature (SST), sea surface salinity (SSS), mixed layer depth (MLD), and eddy kinetic energy (EKE).
+
+The framework offers both interactive and non-interactive analysis capabilities:
+- **Interactive tools**: Jupyter notebooks for exploratory data analysis, plotting, and parameter tuning
+- **Quantitative analysis**: Statistical evaluation including PCA, vertical profiles, and zonal averaging
+- **Visualization**: Horizontal and vertical plotting utilities for model output and observational data comparison
+- **Data processing**: Automated climatology computation and data standardization workflows
+
+NEMOCheck supports multiple NEMO configurations and provides a reproducible environment with locked dependencies for consistent results across Linux and macOS platforms. The modular design allows users to easily incorporate new model configurations and extend the analysis capabilities for their specific validation needs.
+
+## Model Configurations
+
+For detailed information about the different NEMO model configurations supported by this framework, please refer to our comprehensive documentation:
+
+📄 **[Model Configurations Guide](docs/tests_orca05.pdf)**
+
+This document provides:
+- Overview of supported NEMO configurations
+- Configuration-specific parameters and settings
+
 ## Quick Start
 
 ```bash
@@ -82,6 +102,24 @@ To include a new NEMO configuration in the analysis:
 
 1. Open the last cell of `data/processing/processing.ipynb`, update the `cfgs` list, and re-run the cell.
 2. Open `data/compute_climatology.sh`, update the `cfgs` list, and re-run the script.
+
+## References
+
+**Gurvan Madec (2024).** *NEMO Ocean Engine Reference Manual* (v5.0). Zenodo. https://doi.org/10.5281/zenodo.14515373
+
+
+### How to Cite This Framework
+
+If you use NEMOCheck please consider citing this repository:
+
+```
+@software{nemocheck,
+  author = {Thomas Gantz},
+  title = {NEMOCheck: Validation and Analysis Framework for NEMO Ocean Model},
+  url = {https://github.com/gantz-thomas-gantz/NEMOCheck},
+  year = {2025}
+}
+```
 
 
 
