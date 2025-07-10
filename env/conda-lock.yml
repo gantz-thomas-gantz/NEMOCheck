@@ -13,9 +13,9 @@
 version: 1
 metadata:
   content_hash:
-    linux-64: 0c27a1593bde1e4a2511cffd89d201efc8551e677a047b8641ea3da2d75a618a
-    osx-64: 0ae9ded02305648be70bc786ff82965cd3d8a94a950556c17fdb44c9157b8db8
-    osx-arm64: 2d1f8099ae9a1285e52aec63856801f1e82677e39374ee59646f0c73915f9d43
+    linux-64: 2ffe83e189c8cb92abde9fd7fcc7768657c9e4a66e67fa485bb834621d856cc9
+    osx-64: 1c73a50cec0e770e75f82a10bf147179295aca3382fe6dd1df5d23400bea4a8b
+    osx-arm64: 3c838f193430da5f6958df9e788c279b233a16737e0b350e6ffd0872dc960de2
   channels:
   - url: conda-forge
     used_env_vars: []
@@ -7742,6 +7742,55 @@ package:
     sha256: e7d95b50a90cdc9e0fc38bc37f493a61b9d08164114b562bbd9ff0034f45eca2
   category: main
   optional: false
+- name: llvmlite
+  version: 0.44.0
+  manager: conda
+  platform: linux-64
+  dependencies:
+    __glibc: '>=2.17,<3.0.a0'
+    libgcc: '>=13'
+    libstdcxx: '>=13'
+    libzlib: '>=1.3.1,<2.0a0'
+    python: '>=3.13,<3.14.0a0'
+    python_abi: 3.13.*
+  url: https://conda.anaconda.org/conda-forge/linux-64/llvmlite-0.44.0-py313h1b76d92_1.conda
+  hash:
+    md5: 22837ab06ba7099cb71bb27e8d667277
+    sha256: 16fe60ac27ba104c1817e2302b8278324e03226670538bc07e643a2a753f4b95
+  category: main
+  optional: false
+- name: llvmlite
+  version: 0.44.0
+  manager: conda
+  platform: osx-64
+  dependencies:
+    __osx: '>=10.13'
+    libcxx: '>=18'
+    libzlib: '>=1.3.1,<2.0a0'
+    python: '>=3.13,<3.14.0a0'
+    python_abi: 3.13.*
+  url: https://conda.anaconda.org/conda-forge/osx-64/llvmlite-0.44.0-py313h07923c2_1.conda
+  hash:
+    md5: 0228abf66323f1c14b556ae3c560798d
+    sha256: c8d17bb9b98dccfe837196eb6205ba5b8ca354d51ce7514de8b8db52acde0007
+  category: main
+  optional: false
+- name: llvmlite
+  version: 0.44.0
+  manager: conda
+  platform: osx-arm64
+  dependencies:
+    __osx: '>=11.0'
+    libcxx: '>=18'
+    libzlib: '>=1.3.1,<2.0a0'
+    python: '>=3.13,<3.14.0a0'
+    python_abi: 3.13.*
+  url: https://conda.anaconda.org/conda-forge/osx-arm64/llvmlite-0.44.0-py313hd06b435_1.conda
+  hash:
+    md5: 9aa5bb3f590bd0dee360b732c3670f7e
+    sha256: f6c2cf03454eb3b54c0607dacda3961974639e7526251d45e1aa1df89255c522
+  category: main
+  optional: false
 - name: lz4-c
   version: 1.10.0
   manager: conda
@@ -8803,8 +8852,63 @@ package:
     sha256: 7b920e46b9f7a2d2aa6434222e5c8d739021dbc5cc75f32d124a8191d86f9056
   category: main
   optional: false
+- name: numba
+  version: 0.61.2
+  manager: conda
+  platform: linux-64
+  dependencies:
+    __glibc: '>=2.17,<3.0.a0'
+    _openmp_mutex: '>=4.5'
+    libgcc: '>=13'
+    libstdcxx: '>=13'
+    llvmlite: '>=0.44.0,<0.45.0a0'
+    numpy: '>=1.24,<2.3'
+    python: '>=3.13,<3.14.0a0'
+    python_abi: 3.13.*
+  url: https://conda.anaconda.org/conda-forge/linux-64/numba-0.61.2-py313h50b8c88_1.conda
+  hash:
+    md5: 53c79b7cdee329ed4c77cafe27600cdb
+    sha256: e588053a9d8e73fd68a0cdc00b9893800258f376175ed91a05de162a235099f9
+  category: main
+  optional: false
+- name: numba
+  version: 0.61.2
+  manager: conda
+  platform: osx-64
+  dependencies:
+    __osx: '>=10.13'
+    libcxx: '>=18'
+    llvm-openmp: '>=20.1.6'
+    llvmlite: '>=0.44.0,<0.45.0a0'
+    numpy: '>=1.24,<2.3'
+    python: '>=3.13,<3.14.0a0'
+    python_abi: 3.13.*
+  url: https://conda.anaconda.org/conda-forge/osx-64/numba-0.61.2-py313h1997fa5_1.conda
+  hash:
+    md5: 65b3f71087b10e9150a9951cfbf708ca
+    sha256: dff2f79d11dfa45fbaec3bb251aa8db0683de3baeeeeb51367dbbadbcb628e57
+  category: main
+  optional: false
+- name: numba
+  version: 0.61.2
+  manager: conda
+  platform: osx-arm64
+  dependencies:
+    __osx: '>=11.0'
+    libcxx: '>=18'
+    llvm-openmp: '>=20.1.6'
+    llvmlite: '>=0.44.0,<0.45.0a0'
+    numpy: '>=1.24,<2.3'
+    python: '>=3.13,<3.14.0a0'
+    python_abi: 3.13.*
+  url: https://conda.anaconda.org/conda-forge/osx-arm64/numba-0.61.2-py313h2c0ffef_1.conda
+  hash:
+    md5: 1cfd5dddb323637cbe0c5d3dc7d435bd
+    sha256: 0b016b7ba300d2dc6e4368ba3bacfb669314ba62ac3b4af085e8a7f89b0a8d66
+  category: main
+  optional: false
 - name: numpy
-  version: 2.3.1
+  version: 2.2.6
   manager: conda
   platform: linux-64
   dependencies:
@@ -8816,14 +8920,14 @@ package:
     libstdcxx: '>=13'
     python: '>=3.13,<3.14.0a0'
     python_abi: 3.13.*
-  url: https://conda.anaconda.org/conda-forge/linux-64/numpy-2.3.1-py313h17eae1a_0.conda
+  url: https://conda.anaconda.org/conda-forge/linux-64/numpy-2.2.6-py313h17eae1a_0.conda
   hash:
-    md5: 3a155f4d1e110a7330c17ccdce55d315
-    sha256: 96b2ad622ac6521bb58586e9e671e49efe84988bc34a14cbd113b98c67728d5d
+    md5: 7a2d2f9adecd86ed5c29c2115354f615
+    sha256: 7da9ebd80a7311e0482c4c6393be0eddf0012b3846df528e375037409b3d2b3d
   category: main
   optional: false
 - name: numpy
-  version: 2.3.1
+  version: 2.2.6
   manager: conda
   platform: osx-64
   dependencies:
@@ -8834,14 +8938,14 @@ package:
     liblapack: '>=3.9.0,<4.0a0'
     python: '>=3.13,<3.14.0a0'
     python_abi: 3.13.*
-  url: https://conda.anaconda.org/conda-forge/osx-64/numpy-2.3.1-py313hc518a0f_0.conda
+  url: https://conda.anaconda.org/conda-forge/osx-64/numpy-2.2.6-py313hc518a0f_0.conda
   hash:
-    md5: 1bd9317ab52825bc8fa33a32ccc17935
-    sha256: a3a4c28b173227f32d99776212798b822deeef3907f87badc76b74931b27ed72
+    md5: 7b80c7ace05b1b9d7ec6f55130776988
+    sha256: a7994c4968d9cbb12752663e57f600379775b1f032776829068380db9874e449
   category: main
   optional: false
 - name: numpy
-  version: 2.3.1
+  version: 2.2.6
   manager: conda
   platform: osx-arm64
   dependencies:
@@ -8852,10 +8956,10 @@ package:
     liblapack: '>=3.9.0,<4.0a0'
     python: '>=3.13,<3.14.0a0'
     python_abi: 3.13.*
-  url: https://conda.anaconda.org/conda-forge/osx-arm64/numpy-2.3.1-py313h41a2e72_0.conda
+  url: https://conda.anaconda.org/conda-forge/osx-arm64/numpy-2.2.6-py313h41a2e72_0.conda
   hash:
-    md5: 3ed1eeb92906e8653c7346854c32dc6e
-    sha256: 35346fa9da0a6a8776d4235469c1513b116d2ba3844802da00d5e821bb3e9828
+    md5: 6a5bd221d600de2bf1b408678dab01b7
+    sha256: 2206aa59ee700f00896604178864ebe54ab8e87e479a1707def23636a6a62797
   category: main
   optional: false
 - name: openjpeg
@@ -11825,6 +11929,48 @@ package:
     sha256: 7518506cce9a736042132f307b3f4abce63bf076f5fb07c1f4e506c0b214295a
   category: main
   optional: false
+- name: sparse
+  version: 0.17.0
+  manager: conda
+  platform: linux-64
+  dependencies:
+    numba: '>=0.49'
+    numpy: '>=1.17'
+    python: ''
+  url: https://conda.anaconda.org/conda-forge/noarch/sparse-0.17.0-pyhcf101f3_0.conda
+  hash:
+    md5: 1b59de14a7e5888f939611e1fe329e00
+    sha256: 8406de1065e1d4ba206d611dae9a03de7f226f486ce9fb02ab0f29c3bd031a6a
+  category: main
+  optional: false
+- name: sparse
+  version: 0.17.0
+  manager: conda
+  platform: osx-64
+  dependencies:
+    numba: '>=0.49'
+    numpy: '>=1.17'
+    python: '>=3.10'
+  url: https://conda.anaconda.org/conda-forge/noarch/sparse-0.17.0-pyhcf101f3_0.conda
+  hash:
+    md5: 1b59de14a7e5888f939611e1fe329e00
+    sha256: 8406de1065e1d4ba206d611dae9a03de7f226f486ce9fb02ab0f29c3bd031a6a
+  category: main
+  optional: false
+- name: sparse
+  version: 0.17.0
+  manager: conda
+  platform: osx-arm64
+  dependencies:
+    numba: '>=0.49'
+    numpy: '>=1.17'
+    python: '>=3.10'
+  url: https://conda.anaconda.org/conda-forge/noarch/sparse-0.17.0-pyhcf101f3_0.conda
+  hash:
+    md5: 1b59de14a7e5888f939611e1fe329e00
+    sha256: 8406de1065e1d4ba206d611dae9a03de7f226f486ce9fb02ab0f29c3bd031a6a
+  category: main
+  optional: false
 - name: sqlite
   version: 3.50.2
   manager: conda
@@ -13020,57 +13166,60 @@ package:
   category: main
   optional: false
 - name: xesmf
-  version: 0.6.0
+  version: 0.8.10
   manager: conda
   platform: linux-64
   dependencies:
-    cf_xarray: '>=0.3.1'
-    esmpy: '>=8.0.0'
+    cf_xarray: '>=0.5.1'
+    esmpy: '>=8.0.0,!=8.4.0,!=8.4.1,!=8.4.2'
+    numba: '>=0.55.2'
     numpy: '>=1.16'
-    python: '>=3.6'
-    scipy: ''
+    python: '>=3.9'
     shapely: ''
-    xarray: '!=0.16.1'
-  url: https://conda.anaconda.org/conda-forge/noarch/xesmf-0.6.0-pyhd8ed1ab_0.tar.bz2
+    sparse: '>=0.8.0'
+    xarray: '>=0.16.2'
+  url: https://conda.anaconda.org/conda-forge/noarch/xesmf-0.8.10-pyhd8ed1ab_0.conda
   hash:
-    md5: 3259ba3627f0678a1c64da3f0ab115f7
-    sha256: d8320c0f19d0728cecb1f7af3657f7b0865d140c62d18e5e4c5980c7e0071942
+    md5: 633873a69cdd56334c394f2299943d54
+    sha256: 96c0b5dc0707068c6331aa5b78c42d44139a54b5fdd199f3e5ee2108d646b1ff
   category: main
   optional: false
 - name: xesmf
-  version: 0.6.0
+  version: 0.8.10
   manager: conda
   platform: osx-64
   dependencies:
-    cf_xarray: '>=0.3.1'
-    esmpy: '>=8.0.0'
+    cf_xarray: '>=0.5.1'
+    esmpy: '>=8.0.0,!=8.4.0,!=8.4.1,!=8.4.2'
+    numba: '>=0.55.2'
     numpy: '>=1.16'
-    python: '>=3.6'
-    scipy: ''
+    python: '>=3.9'
     shapely: ''
-    xarray: '!=0.16.1'
-  url: https://conda.anaconda.org/conda-forge/noarch/xesmf-0.6.0-pyhd8ed1ab_0.tar.bz2
+    sparse: '>=0.8.0'
+    xarray: '>=0.16.2'
+  url: https://conda.anaconda.org/conda-forge/noarch/xesmf-0.8.10-pyhd8ed1ab_0.conda
   hash:
-    md5: 3259ba3627f0678a1c64da3f0ab115f7
-    sha256: d8320c0f19d0728cecb1f7af3657f7b0865d140c62d18e5e4c5980c7e0071942
+    md5: 633873a69cdd56334c394f2299943d54
+    sha256: 96c0b5dc0707068c6331aa5b78c42d44139a54b5fdd199f3e5ee2108d646b1ff
   category: main
   optional: false
 - name: xesmf
-  version: 0.6.0
+  version: 0.8.10
   manager: conda
   platform: osx-arm64
   dependencies:
-    cf_xarray: '>=0.3.1'
-    esmpy: '>=8.0.0'
+    cf_xarray: '>=0.5.1'
+    esmpy: '>=8.0.0,!=8.4.0,!=8.4.1,!=8.4.2'
+    numba: '>=0.55.2'
     numpy: '>=1.16'
-    python: '>=3.6'
-    scipy: ''
+    python: '>=3.9'
     shapely: ''
-    xarray: '!=0.16.1'
-  url: https://conda.anaconda.org/conda-forge/noarch/xesmf-0.6.0-pyhd8ed1ab_0.tar.bz2
+    sparse: '>=0.8.0'
+    xarray: '>=0.16.2'
+  url: https://conda.anaconda.org/conda-forge/noarch/xesmf-0.8.10-pyhd8ed1ab_0.conda
   hash:
-    md5: 3259ba3627f0678a1c64da3f0ab115f7
-    sha256: d8320c0f19d0728cecb1f7af3657f7b0865d140c62d18e5e4c5980c7e0071942
+    md5: 633873a69cdd56334c394f2299943d54
+    sha256: 96c0b5dc0707068c6331aa5b78c42d44139a54b5fdd199f3e5ee2108d646b1ff
   category: main
   optional: false
 - name: xkeyboard-config

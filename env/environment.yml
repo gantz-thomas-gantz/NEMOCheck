@@ -15,7 +15,7 @@ dependencies:
   - regionmask
   - scipy
   - xarray
-  - xesmf 
+  - xesmf >=0.8.0
   - netCDF4
   - pyproj  
   - proj
