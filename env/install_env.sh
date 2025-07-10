@@ -23,6 +23,9 @@ fi
 # Install Jupyter kernel
 "$MICROMAMBA" run -n "$env_name" python -m ipykernel install --user --name "$env_name"
 
-echo "Environment '$env_name' is ready as a Jupyter kernel."
-echo "You can select it in Jupyter Lab's kernel list."
+echo "Environment '$env_name' is ready and available as a Jupyter kernel."
+echo "To launch JupyterLab using this environment, run:"
+echo "  \"$MICROMAMBA\" run -n \"$env_name\" jupyter-lab"
+
+
 

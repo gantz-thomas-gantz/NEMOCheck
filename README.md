@@ -30,7 +30,7 @@ cd NEMOCheck
 
 ./env/install_env.sh
 
-jupyter-lab
+Start the jupyter-lab in this environment as shown on the terminal after above command.
 ````
 
 * Run any notebook as usual in JupyterLab.
