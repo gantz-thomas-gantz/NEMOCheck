@@ -42,12 +42,14 @@ This document provides:
 ## ⚡ Quick Start
 
 ```bash
-git clone git@github.com:gantz-thomas-gantz/NEMOCheck.git
+git clone git@github.com:gantz-thomas-gantz/NEMOCheck.git #https
 cd NEMOCheck
 
 ./env/install_env.sh
 
 # Start JupyterLab in this environment as shown on the terminal after the above command.
+
+# Download git lfs
 ```
 
 - Run any notebook as usual in JupyterLab.
