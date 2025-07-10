@@ -10,7 +10,7 @@ MICROMAMBA="${HOME}/bin/micromamba"
 if [ ! -f "$MICROMAMBA" ]; then
   mkdir -p "$HOME/bin"
   curl -Ls https://micro.mamba.pm/api/micromamba/linux-64/latest \
-    | tar -C "$HOME/bin" -xvj bin/micromamba
+    | tar -xz -C "$HOME/bin" --strip-components=1 bin/micromamba
   chmod +x "$MICROMAMBA"
 fi
 
