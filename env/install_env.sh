@@ -2,10 +2,14 @@
 set -euo pipefail
 
 env_name="nemocheck_env"
-lock_file="conda-lock.yml"
 
+# Get directory of this script (so paths work regardless of where you run it from)
+script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+lock_file="${script_dir}/conda-lock.yml"
 MICROMAMBA="${HOME}/bin/micromamba"
 
+# Download micromamba if missing
 if ! command -v micromamba &> /dev/null && [ ! -f "$MICROMAMBA" ]; then
   echo "Downloading micromamba..."
   mkdir -p "$HOME/bin"
@@ -17,7 +21,20 @@ elif [ -f "$MICROMAMBA" ]; then
   export PATH="$HOME/bin:$PATH"
 fi
 
-# Use the lock file for reproducible install
+# Initialize micromamba shell hook for the current bash session if not done yet
+if [[ -n "${BASH_VERSION-}" ]]; then
+  # Only do this if micromamba shell hook isn't already active
+  if ! micromamba shell hook --shell bash &>/dev/null; then
+    eval "$(micromamba shell hook --shell bash)"
+  fi
+fi
+
+# Check lock file exists
+if [ ! -f "$lock_file" ]; then
+  echo "Error: Lock file not found at $lock_file"
+  exit 1
+fi
+
 echo "Creating or updating environment '$env_name' from lock file..."
 micromamba create -y -n "$env_name" --file "$lock_file"
 
@@ -27,3 +44,4 @@ micromamba run -n "$env_name" python -m ipykernel install --user --name "$env_na
 echo ""
 echo "Environment '$env_name' is ready."
 echo "To activate it: micromamba activate $env_name"
+
