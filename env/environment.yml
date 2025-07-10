@@ -1,0 +1,19 @@
+name: nemocheck_env
+channels:
+  - conda-forge
+dependencies:
+  - python
+  - jupyterlab
+  - cdo         
+  - cartopy
+  - dash
+  - dash-bootstrap-components
+  - matplotlib
+  - numpy
+  - pandas
+  - plotly
+  - regionmask
+  - scipy
+  - xarray
+  - xesmf     
+  - pip   
