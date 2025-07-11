@@ -13,9 +13,9 @@
 version: 1
 metadata:
   content_hash:
-    linux-64: 2ffe83e189c8cb92abde9fd7fcc7768657c9e4a66e67fa485bb834621d856cc9
-    osx-64: 1c73a50cec0e770e75f82a10bf147179295aca3382fe6dd1df5d23400bea4a8b
-    osx-arm64: 3c838f193430da5f6958df9e788c279b233a16737e0b350e6ffd0872dc960de2
+    linux-64: 546f794fa901ffd88670a473635fbf6e386b04f15476adfba70e5dbd56e4c45c
+    osx-64: 324a13d759f4aec913277f0246aa126b22787d68cad7dff7f553b0c5752a6513
+    osx-arm64: eb88ea178e5c1daeef9ba854a5a0562fe8e55df6964cae8e13adc7297c6b9fdd
   channels:
   - url: conda-forge
     used_env_vars: []
@@ -2123,6 +2123,45 @@ package:
   hash:
     md5: 2cf824fe702d88e641eec9f9f653e170
     sha256: 8d4f908e670be360617d418c328213bc46e7100154c3742db085148141712f60
+  category: main
+  optional: false
+- name: eofs
+  version: 2.0.0
+  manager: conda
+  platform: linux-64
+  dependencies:
+    numpy: ''
+    python: '>=3.9'
+  url: https://conda.anaconda.org/conda-forge/noarch/eofs-2.0.0-pyhff2d567_0.conda
+  hash:
+    md5: a3cce45423d73c3d4420b71351e71fef
+    sha256: a5ea05a972b8e795b75df94ff86d0a36b48ab1e93376a1552c99077736040e49
+  category: main
+  optional: false
+- name: eofs
+  version: 2.0.0
+  manager: conda
+  platform: osx-64
+  dependencies:
+    numpy: ''
+    python: '>=3.9'
+  url: https://conda.anaconda.org/conda-forge/noarch/eofs-2.0.0-pyhff2d567_0.conda
+  hash:
+    md5: a3cce45423d73c3d4420b71351e71fef
+    sha256: a5ea05a972b8e795b75df94ff86d0a36b48ab1e93376a1552c99077736040e49
+  category: main
+  optional: false
+- name: eofs
+  version: 2.0.0
+  manager: conda
+  platform: osx-arm64
+  dependencies:
+    numpy: ''
+    python: '>=3.9'
+  url: https://conda.anaconda.org/conda-forge/noarch/eofs-2.0.0-pyhff2d567_0.conda
+  hash:
+    md5: a3cce45423d73c3d4420b71351e71fef
+    sha256: a5ea05a972b8e795b75df94ff86d0a36b48ab1e93376a1552c99077736040e49
   category: main
   optional: false
 - name: esmf
@@ -5654,33 +5693,33 @@ package:
   category: main
   optional: false
 - name: libclang-cpp20.1
-  version: 20.1.7
+  version: 20.1.8
   manager: conda
   platform: linux-64
   dependencies:
     __glibc: '>=2.17,<3.0.a0'
-    libgcc: '>=13'
-    libllvm20: '>=20.1.7,<20.2.0a0'
-    libstdcxx: '>=13'
-  url: https://conda.anaconda.org/conda-forge/linux-64/libclang-cpp20.1-20.1.7-default_h1df26ce_0.conda
+    libgcc: '>=14'
+    libllvm20: '>=20.1.8,<20.2.0a0'
+    libstdcxx: '>=14'
+  url: https://conda.anaconda.org/conda-forge/linux-64/libclang-cpp20.1-20.1.8-default_hddf928d_0.conda
   hash:
-    md5: f9ef7bce54a7673cdbc2fadd8bca1956
-    sha256: 4194c75a91a9c790cbe96c3c33fc2f388274d1be85ec884ce7c88d7e8f9d96f2
+    md5: b939740734ad5a8e8f6c942374dee68d
+    sha256: 202742a287db5889ae5511fab24b4aff40f0c515476c1ea130ff56fae4dd565a
   category: main
   optional: false
 - name: libclang13
-  version: 20.1.7
+  version: 20.1.8
   manager: conda
   platform: linux-64
   dependencies:
     __glibc: '>=2.17,<3.0.a0'
-    libgcc: '>=13'
-    libllvm20: '>=20.1.7,<20.2.0a0'
-    libstdcxx: '>=13'
-  url: https://conda.anaconda.org/conda-forge/linux-64/libclang13-20.1.7-default_he06ed0a_0.conda
+    libgcc: '>=14'
+    libllvm20: '>=20.1.8,<20.2.0a0'
+    libstdcxx: '>=14'
+  url: https://conda.anaconda.org/conda-forge/linux-64/libclang13-20.1.8-default_ha444ac7_0.conda
   hash:
-    md5: 846875a174de6b6ff19e205a7d90eb74
-    sha256: 6541d19a1659062dbf8823d6a1206e28f788369bcf7af9171d7c9069c1d35932
+    md5: 783f9cdcb0255ed00e3f1be22e16de40
+    sha256: 39fdf9616df5dd13dee881fc19e8f9100db2319e121d9b673a3fc6a0c76743a3
   category: main
   optional: false
 - name: libcups
