@@ -60,13 +60,12 @@ Get started with NEMOCheck by following these steps:
    git lfs install
    ```
 
-3. **Clone the Repository**
-Download the project code to your local machine (note: this may take a while due to \~7 GB of data):
-
-```bash
-git clone https://github.com/gantz-thomas-gantz/NEMOCheck.git
-cd NEMOCheck
-```
+3. **Clone the Repository**   
+    Download the project code to your local machine (note: this may take a while due to \~7 GB of data):
+    ```bash
+    git clone https://github.com/gantz-thomas-gantz/NEMOCheck.git
+    cd NEMOCheck
+    ```
 
 4. **Set Up the Environment**  
    Run the provided script to create a Python environment and install dependencies:
