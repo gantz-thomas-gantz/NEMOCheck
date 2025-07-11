@@ -10,5 +10,5 @@
 
 # Model output files (NEMO)
 nemo??_1m_201001_202212_grid_T.nc
-nemo??_1m_201001_202212_grid_T_new.nc
+!nemo00_1m_201001_202212_grid_T.nc
 

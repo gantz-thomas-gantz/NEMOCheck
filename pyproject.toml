@@ -3,7 +3,7 @@ requires = ["setuptools>=64", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "utils"
+name = "nemocheck"
 version = "0.1.0"
 description = "Validation tools for the NEMO ocean model"
 readme = "README.md"
@@ -14,6 +14,7 @@ dependencies = [
     "cartopy",
     "dash",
     "dash_bootstrap_components",
+    "eofs",
     "matplotlib",
     "numpy",
     "pandas",
@@ -21,7 +22,7 @@ dependencies = [
     "regionmask",
     "scipy",
     "xarray",
-    "xesmf",
+    "xesmf>=0.8.0",
     "netCDF4",
     "pyproj",  
     "proj"

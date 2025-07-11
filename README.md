@@ -6,7 +6,7 @@
 
 ## 🚀 Abstract
 
-**NEMOCheck** is a robust validation and analysis toolkit for the [NEMO ocean model](https://www.nemo-ocean.eu/). It empowers to perform thorough, reproducible, and insightful assessments of model performance. Supported comparison modes include both model–model and model–observation evaluations for essential oceanographic variables:
+**NEMOCheck** is a robust validation and analysis toolkit for the [NEMO ocean model](https://www.nemo-ocean.eu/). It empowers users to perform thorough, reproducible, and insightful assessments of model performance. Supported comparison modes include both model–model and model–observation evaluations for essential oceanographic variables:
 
 - **Sea Surface Temperature (SST)**
 - **Sea Surface Salinity (SSS)**
@@ -83,7 +83,7 @@ You are now ready to explore and use NEMOCheck in your browser via **JupyterLab*
 - You can also run interactive plotting scripts directly in the terminal, for example:
 
   ```bash
-  python src/utils/plot/model-model/horizontal.py
+  python src/utils/plot/model_model/horizontal.py
   ```
 
 ---
@@ -112,7 +112,10 @@ data/
   ├── obs/           # Observational datasets (SST, SSS, MLD, EKE)
   ├── processed/     # Preprocessed, standardized files ready for analysis
   ├── weights/       # Interpolation weight files
-  └── processing/    # Scripts for data processing
+  └── processing/    # Scripts & notebooks for data processing
+      ├── processing.ipynb        # General data processing
+      ├── monthly_sst.ipynb       # Monthly SST standardization
+      └── compute_climatology.sh  # Climatology computation script
 ```
 
 ### 🛠️ Data Processing
@@ -120,7 +123,7 @@ data/
 Processed data is generated via one of the following methods:
 
 - **Climatology computation bash script**
-  - Script: `data/compute_climatology.sh`
+  - Script: `data/processing/compute_climatology.sh`
   - Output: `data/processed/nemo<00>_clim_2011_2022.nc`
   - Usage: Horizontal model–model comparison: `src/interactive/plotting_tool`
 
@@ -129,8 +132,13 @@ Processed data is generated via one of the following methods:
   - Output: `data/processed/model.nc`, `data/processed/combined_observations.nc`
   - Usage:
     - Horizontal model–obs comparison: `src/interactive/plotting_tool`
-    - Error profiles for model–obs: `src/interactive_plotting_tool/`
+    - Error profiles for model–obs: `src/interactive/plotting_tool.ipynb`
     - Non-interactive SST diagnostics: `src/non-interactive/sst.ipynb`
+
+- **Monthly SST processing**
+  - Notebook: `data/processing/monthly_sst.ipynb`
+  - Output: `data/processed/nemo00_sst_monthly_2011_2022.nc`, `data/processed/observations_sst_monthly_2011_2022.nc`
+  - Usage: Standardized monthly SST datasets for quantitative analysis (e.g., `src/quantitative/pca.ipynb`)
 
 - **Model normalization function**
   - Function: `normalize_model_file()` in `src/utils/data/general.py`
@@ -169,7 +177,7 @@ NEMOCheck/
     │   └── numerical_schemes.ipynb # Model scheme analysis
     ├── 📊 quantitative/       # Statistical analysis notebooks
     │   ├── eke.ipynb          # Eddy kinetic energy analysis
-    │   ├── pca.ipynb          # Principal component analysis
+    │   ├── pca.ipynb          # Principal component analysis (SST patterns)
     │   ├── vertical.ipynb     # Vertical profile diagnostics
     │   └── zonal_sst.ipynb    # Zonal SST analysis
     ├── 🔬 non-interactive/    # Automated analysis scripts
@@ -201,7 +209,7 @@ The interactive notebooks provide an intuitive entry point to NEMOCheck's capabi
 To include a new NEMO configuration in the analysis:
 
 1. Open the last cell of `data/processing/processing.ipynb`, update the `cfgs` list, and re-run the cell.
-2. Open `data/compute_climatology.sh`, update the `cfgs` list, and re-run the script.
+2. Open `data/processing/compute_climatology.sh`, update the `cfgs` list, and re-run the script.
 
 ---
 
