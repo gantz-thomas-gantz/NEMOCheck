@@ -61,7 +61,7 @@ Get started with NEMOCheck by following these steps:
    ```
 
 3. **Clone the Repository**   
-    Download the project code to your local machine (note: this may take a while due to \~7 GB of data):
+    Download the project code to your local machine (note: this may take a while due to \~10 GB of data):
     ```bash
     git clone https://github.com/gantz-thomas-gantz/NEMOCheck.git
     cd NEMOCheck
