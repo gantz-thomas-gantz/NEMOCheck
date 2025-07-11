@@ -191,7 +191,7 @@ NEMOCheck/
 
 - **`plotting_tool.ipynb`** 🎨 - **The crown jewel!** Features interactive visualizations for comparing models and observations. 
 
-- **`numerical_schemes.ipynb`** 🔍 — Deep dive into model numerical schemes and their impact on results.
+- **`numerical_schemes.ipynb`** 🔍 - Deep dive into model numerical schemes and their impact on results.
 
 The interactive notebooks provide an intuitive entry point to NEMOCheck's capabilities, with rich visualizations that make complex oceanographic data immediately accessible and interpretable.
 
