@@ -60,7 +60,7 @@ Get started with NEMOCheck by following these steps:
    git lfs install
    ```
 
-**3. Clone the Repository**
+3. **Clone the Repository**
 Download the project code to your local machine (note: this may take a while due to \~7 GB of data):
 
 ```bash
