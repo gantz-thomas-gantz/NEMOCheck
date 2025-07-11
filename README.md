@@ -31,7 +31,7 @@ NEMOCheck provides both interactive Jupyter notebooks for exploration and script
 
 For a comprehensive overview of supported NEMO configurations, check out:
 
-[![Model Configurations Guide](docs/preview_orca05.png)](docs/tests_orca05.pdf)
+📄 [Model Configurations Guide (PDF)](docs/tests_orca05.pdf)
 
 This document provides:
 - Overview of supported NEMO configurations
@@ -60,12 +60,13 @@ Get started with NEMOCheck by following these steps:
    git lfs install
    ```
 
-3. **Clone the Repository**  
-   Download the project code to your local machine:
-   ```bash
-   git clone https://github.com/gantz-thomas-gantz/NEMOCheck.git
-   cd NEMOCheck
-   ```
+**3. Clone the Repository**
+Download the project code to your local machine (note: this may take a while due to \~7 GB of data):
+
+```bash
+git clone https://github.com/gantz-thomas-gantz/NEMOCheck.git
+cd NEMOCheck
+```
 
 4. **Set Up the Environment**  
    Run the provided script to create a Python environment and install dependencies:
@@ -188,7 +189,7 @@ NEMOCheck/
 
 **New users should begin with the `src/interactive/` notebooks**, particularly:
 
-- **`plotting_tool.ipynb`** 🎨 — **The crown jewel!** Features gorgeous, interactive visualizations for comparing models and observations. Perfect for exploration.
+- **`plotting_tool.ipynb`** 🎨 - **The crown jewel!** Features interactive visualizations for comparing models and observations. 
 
 - **`numerical_schemes.ipynb`** 🔍 — Deep dive into model numerical schemes and their impact on results.
 
